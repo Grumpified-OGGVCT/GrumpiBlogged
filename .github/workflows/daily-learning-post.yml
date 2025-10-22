@@ -52,6 +52,6 @@ jobs:
           cd grumpiblogged
           git config --local user.email "action@github.com"
           git config --local user.name "GrumpiBot"
-          git add _posts/
+          git add docs/
           git diff --quiet && git diff --staged --quiet || (git commit -m "feat(post): daily learning - $(date -u '+%Y-%m-%d')" && git push)
 

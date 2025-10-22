@@ -12,7 +12,7 @@ import random
 
 # Paths
 OLLAMA_PULSE_DATA = Path("../ollama_pulse/data")
-POSTS_DIR = Path("_posts")
+POSTS_DIR = Path("docs/_posts")
 
 
 def ensure_posts_dir():
