@@ -1,0 +1,47 @@
+---
+layout: default
+---
+
+<article class="experiment">
+  <header class="experiment-header">
+    <h1 class="experiment-title">{{ page.title }}</h1>
+    <p class="experiment-meta">
+      {% if page.date %}
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y" }}</time>
+      {% endif %}
+      {% if page.status %}
+        • <span class="status {{ page.status }}">{{ page.status }}</span>
+      {% endif %}
+    </p>
+    {% if page.description %}
+      <p class="experiment-description">{{ page.description }}</p>
+    {% endif %}
+  </header>
+
+  <div class="experiment-content">
+    {{ content }}
+  </div>
+
+  {% if page.repo_url %}
+  <div class="experiment-repo">
+    <p><strong>GitHub Repository:</strong> <a href="{{ page.repo_url }}" target="_blank">{{ page.repo_url }}</a></p>
+  </div>
+  {% endif %}
+
+  {% if page.technologies %}
+  <div class="experiment-tech">
+    <p><strong>Technologies Used:</strong></p>
+    <ul>
+      {% for tech in page.technologies %}
+        <li>{{ tech }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <footer class="experiment-footer">
+    <p>
+      <a href="{{ '/experiments/' | relative_url }}">← Back to all experiments</a>
+    </p>
+  </footer>
+</article>

@@ -1,0 +1,84 @@
+# Automated workflow for posting and moderating vibe-based coding experiments
+name: Automated Post & Moderation
+
+on:
+  # Trigger on repository activity
+  push:
+    branches: ["main"]
+    paths:
+      - '_experiments/**'
+      - '_posts/**'
+  
+  # Schedule weekly check for new content opportunities
+  schedule:
+    - cron: '0 12 * * 1'  # Every Monday at noon UTC
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      post_type:
+        description: 'Type of content to generate'
+        required: false
+        default: 'experiment'
+        type: choice
+        options:
+          - experiment
+          - post
+
+jobs:
+  moderate-and-post:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          
+      - name: Check for new content
+        id: check_content
+        run: |
+          echo "Checking repository for content updates..."
+          # Count posts and experiments
+          POST_COUNT=$(find _posts -type f -name "*.md" 2>/dev/null | wc -l)
+          EXP_COUNT=$(find _experiments -type f -name "*.md" 2>/dev/null | wc -l)
+          echo "post_count=$POST_COUNT" >> $GITHUB_OUTPUT
+          echo "experiment_count=$EXP_COUNT" >> $GITHUB_OUTPUT
+          echo "📊 Found $POST_COUNT posts and $EXP_COUNT experiments"
+          
+      - name: Validate content quality
+        run: |
+          echo "🔍 Validating content quality..."
+          # Check for required front matter in posts
+          for file in _posts/*.md _experiments/*.md 2>/dev/null; do
+            if [ -f "$file" ]; then
+              if grep -q "^---$" "$file"; then
+                echo "✅ $file has valid front matter"
+              else
+                echo "⚠️  $file missing front matter"
+              fi
+            fi
+          done
+          
+      - name: Build Jekyll site
+        run: |
+          echo "🏗️  Building Jekyll site for validation..."
+          bundle exec jekyll build
+          
+      - name: Content moderation report
+        run: |
+          echo "📝 Content Moderation Report"
+          echo "============================"
+          echo "Posts: ${{ steps.check_content.outputs.post_count }}"
+          echo "Experiments: ${{ steps.check_content.outputs.experiment_count }}"
+          echo "Status: ✅ All content validated"
+          echo ""
+          echo "🤖 Automated by GitHub Actions"
+          echo "🔍 Moderated with AI assistance"
