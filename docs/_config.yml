@@ -7,8 +7,8 @@ description: >-
   AI Vibe Coding Adventures: Automated Blog of Self-Posting, Moderated Posts 
   from Personal Repos & Experiences. Powered by GitHub Copilot & Dependabot 
   for seamless AI-assisted coding and dependency updates.
-baseurl: ""
-url: "https://grumpified-oggvct.github.io/GrumpiBlogged"
+baseurl: "/GrumpiBlogged"
+url: "https://grumpified-oggvct.github.io"
 
 # Theme settings - Using remote Jekyll Midnight theme
 remote_theme: pages-themes/midnight@v0.2.0
