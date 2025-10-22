@@ -3,14 +3,100 @@
 
 @import "{{ site.theme }}";
 
-/* Custom styles for GrumpiBlogged */
+/* ============================================
+   GRUMPIBLOGGED - MODERN REDESIGN v2.0
+   A premium dark theme blog experience
+   ============================================ */
 
-/* Navigation menu styling */
+/* ============================================
+   GLOBAL RESETS & BASE STYLES
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+/* Container improvements for better centering */
+.wrapper,
+#container .inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ============================================
+   HEADER & BRANDING
+   ============================================ */
+
+header {
+  text-align: center;
+  padding: 60px 0 40px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #63c0f5, transparent);
+}
+
+header h1 {
+  font-size: 3.5rem;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #63c0f5 0%, #4fa8d5 50%, #63c0f5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+  font-weight: 700;
+}
+
+header h1 a {
+  background: linear-gradient(135deg, #63c0f5 0%, #4fa8d5 50%, #63c0f5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+}
+
+header h2 {
+  font-size: 1.1rem;
+  color: #999;
+  font-weight: 300;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ============================================
+   NAVIGATION - MODERN & RESPONSIVE
+   ============================================ */
+
 #main-nav {
-  margin: 20px 0;
-  padding: 15px 0;
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
+  margin: 0 0 60px;
+  padding: 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 20px;
+  z-index: 1000;
 }
 
 #main-nav ul {
@@ -18,8 +104,10 @@
   padding: 0;
   margin: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
 }
 
 #main-nav li {
@@ -28,168 +116,604 @@
 
 #main-nav a {
   text-decoration: none;
-  color: #63c0f5;
+  color: #aaa;
   font-weight: 500;
-  padding: 5px 10px;
-  border-radius: 3px;
-  transition: background-color 0.3s, color 0.3s;
+  padding: 12px 24px;
+  border-radius: 30px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+#main-nav a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(99, 192, 245, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+#main-nav a:hover::before {
+  left: 100%;
 }
 
 #main-nav a:hover,
 #main-nav a.active {
-  background-color: #63c0f5;
-  color: #1a1a1a;
+  background: linear-gradient(135deg, #63c0f5 0%, #4fa8d5 100%);
+  color: #0f0f0f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 192, 245, 0.3);
 }
 
-/* Post and experiment styling */
+/* ============================================
+   MAIN CONTENT AREA
+   ============================================ */
+
+#main-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ============================================
+   POST & EXPERIMENT CARDS - MODERN LAYOUT
+   ============================================ */
+
 .post, .experiment {
-  margin: 30px 0;
+  margin: 40px 0;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(99, 192, 245, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.post::before,
+.experiment::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #63c0f5, #4fa8d5, #63c0f5);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.post:hover,
+.experiment:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 48px rgba(99, 192, 245, 0.2);
+  border-color: rgba(99, 192, 245, 0.3);
 }
 
 .post-header, .experiment-header {
   margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #333;
+  padding-bottom: 25px;
+  border-bottom: 1px solid rgba(99, 192, 245, 0.1);
 }
 
 .post-title, .experiment-title {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   color: #63c0f5;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+
+.post-title a,
+.experiment-title a {
+  color: #63c0f5;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.post-title a:hover,
+.experiment-title a:hover {
+  color: #4fa8d5;
 }
 
 .post-meta, .experiment-meta {
   color: #888;
-  font-size: 0.9em;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .post-content, .experiment-content {
   line-height: 1.8;
+  font-size: 1.05rem;
+  color: #d0d0d0;
+}
+
+.post-content p,
+.experiment-content p {
+  margin-bottom: 1.5rem;
 }
 
 .post-repo, .experiment-repo {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: #1a1a1a;
-  border-left: 3px solid #63c0f5;
+  margin: 30px 0;
+  padding: 25px;
+  background: rgba(99, 192, 245, 0.05);
+  border-radius: 12px;
+  border-left: 4px solid #63c0f5;
+  backdrop-filter: blur(10px);
+}
+
+.post-repo a,
+.experiment-repo a {
+  color: #63c0f5;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.post-repo a:hover,
+.experiment-repo a:hover {
+  color: #4fa8d5;
 }
 
 .experiment-tech {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: #1a1a1a;
-  border-left: 3px solid #63c0f5;
+  margin: 30px 0;
+  padding: 25px;
+  background: rgba(99, 192, 245, 0.05);
+  border-radius: 12px;
+  border-left: 4px solid #63c0f5;
+}
+
+.experiment-tech h3 {
+  color: #63c0f5;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
 }
 
 .experiment-tech ul {
   margin: 10px 0 0 0;
+  padding-left: 20px;
 }
 
-/* Status badges */
+.experiment-tech li {
+  margin-bottom: 8px;
+  color: #d0d0d0;
+}
+
+/* ============================================
+   STATUS BADGES - MODERN PILLS
+   ============================================ */
+
 .status {
   display: inline-block;
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-size: 0.85em;
-  font-weight: bold;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.status:hover {
+  transform: scale(1.05);
 }
 
 .status.active {
-  background-color: #28a745;
+  background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
 }
 
 .status.completed {
-  background-color: #007bff;
+  background: linear-gradient(135deg, #007bff, #0056b3);
   color: white;
 }
 
 .status.archived {
-  background-color: #6c757d;
+  background: linear-gradient(135deg, #6c757d, #495057);
   color: white;
 }
 
-/* Tags */
+/* ============================================
+   TAGS - MODERN CHIPS
+   ============================================ */
+
 .tag {
   display: inline-block;
-  padding: 3px 8px;
-  margin: 2px;
-  background-color: #333;
+  padding: 6px 14px;
+  margin: 4px;
+  background: rgba(99, 192, 245, 0.1);
   color: #63c0f5;
-  border-radius: 3px;
-  font-size: 0.85em;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  border: 1px solid rgba(99, 192, 245, 0.2);
+  transition: all 0.3s;
+  font-weight: 500;
 }
 
-/* Lists */
+.tag:hover {
+  background: rgba(99, 192, 245, 0.2);
+  border-color: rgba(99, 192, 245, 0.4);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   POST & EXPERIMENT LISTS
+   ============================================ */
+
 .posts-list, .experiments-list {
-  margin-top: 30px;
+  margin-top: 60px;
 }
 
 .post-summary, .experiment-summary {
-  margin: 30px 0;
-  padding-bottom: 20px;
+  margin: 40px 0;
+  padding: 35px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(99, 192, 245, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.post-summary::before,
+.experiment-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #63c0f5, #4fa8d5);
+  border-radius: 16px 0 0 16px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.post-summary:hover,
+.experiment-summary:hover {
+  transform: translateX(8px);
+  box-shadow: 0 8px 32px rgba(99, 192, 245, 0.15);
+  border-color: rgba(99, 192, 245, 0.3);
+}
+
+.post-summary:hover::before,
+.experiment-summary:hover::before {
+  opacity: 1;
 }
 
 .posts-list hr, .experiments-list hr {
   border: 0;
-  border-top: 1px solid #333;
-  margin: 30px 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(99, 192, 245, 0.2), transparent);
+  margin: 50px 0;
 }
 
-/* Footer styling */
+/* ============================================
+   FOOTER - MODERN & BALANCED
+   ============================================ */
+
 footer {
-  margin-top: 50px;
-  padding-top: 20px;
-  border-top: 1px solid #333;
+  margin-top: 100px;
+  padding: 40px 0;
+  border-top: 1px solid rgba(99, 192, 245, 0.1);
   text-align: center;
   color: #888;
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #63c0f5, transparent);
+}
+
+footer p {
+  margin: 10px 0;
+  font-size: 0.9rem;
 }
 
 footer a {
   color: #63c0f5;
+  text-decoration: none;
+  transition: color 0.3s;
+  font-weight: 500;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  #main-nav ul {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  #main-nav a {
-    display: block;
-  }
+footer a:hover {
+  color: #4fa8d5;
 }
 
-/* Code blocks enhancement */
+/* ============================================
+   CODE BLOCKS - ENHANCED STYLING
+   ============================================ */
+
 pre, code {
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(99, 192, 245, 0.1);
+  border-radius: 6px;
 }
 
 pre {
-  padding: 15px;
+  padding: 20px;
   overflow-x: auto;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1.6;
 }
 
-/* Links */
+code {
+  padding: 2px 6px;
+  font-size: 0.9em;
+}
+
+pre code {
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+
+/* ============================================
+   LINKS - SMOOTH TRANSITIONS
+   ============================================ */
+
 a {
   color: #63c0f5;
-  transition: color 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
 }
 
 a:hover {
   color: #4fa8d5;
 }
 
-/* Home page specific */
+/* ============================================
+   HOME PAGE SPECIFIC STYLES
+   ============================================ */
+
 .posts article, .experiments article {
-  margin: 20px 0;
-  padding: 15px 0;
-  border-bottom: 1px solid #333;
+  margin: 30px 0;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(99, 192, 245, 0.1);
+  transition: all 0.3s;
+}
+
+.posts article:hover,
+.experiments article:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(99, 192, 245, 0.15);
+  border-color: rgba(99, 192, 245, 0.3);
 }
 
 .posts article:last-child,
 .experiments article:last-child {
-  border-bottom: none;
+  border-bottom: 1px solid rgba(99, 192, 245, 0.1);
+}
+
+/* ============================================
+   TYPOGRAPHY ENHANCEMENTS
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  color: #e8e8e8;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+p {
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 2rem;
+}
+
+.mb-4 {
+  margin-bottom: 2rem;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE FIRST
+   ============================================ */
+
+/* Tablet and below (768px) */
+@media (max-width: 768px) {
+  .wrapper,
+  #container .inner {
+    padding: 0 20px;
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+  }
+
+  header h2 {
+    font-size: 1rem;
+  }
+
+  #main-nav {
+    border-radius: 16px;
+    position: relative;
+    top: 0;
+  }
+
+  #main-nav ul {
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+  }
+
+  #main-nav a {
+    display: block;
+    text-align: center;
+    padding: 14px 20px;
+  }
+
+  .post, .experiment {
+    padding: 25px;
+    margin: 30px 0;
+  }
+
+  .post-title, .experiment-title {
+    font-size: 1.5rem;
+  }
+
+  .post-summary, .experiment-summary {
+    padding: 25px;
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+}
+
+/* Mobile (480px) */
+@media (max-width: 480px) {
+  header {
+    padding: 40px 0 30px;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  header h2 {
+    font-size: 0.9rem;
+  }
+
+  .post, .experiment {
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  .post-title, .experiment-title {
+    font-size: 1.3rem;
+  }
+
+  .post-content, .experiment-content {
+    font-size: 1rem;
+  }
+
+  .post-summary, .experiment-summary {
+    padding: 20px;
+  }
+
+  footer {
+    margin-top: 60px;
+    padding: 30px 0;
+  }
+}
+
+/* Large screens (1400px+) */
+@media (min-width: 1400px) {
+  .wrapper,
+  #container .inner {
+    max-width: 1400px;
+  }
+
+  #main-content {
+    max-width: 1000px;
+  }
+
+  header h1 {
+    font-size: 4rem;
+  }
+
+  .post-title, .experiment-title {
+    font-size: 2.5rem;
+  }
+}
+
+/* ============================================
+   ANIMATIONS & MICRO-INTERACTIONS
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post, .experiment, .post-summary, .experiment-summary {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(99, 192, 245, 0.3);
+  color: #fff;
+}
+
+::-moz-selection {
+  background: rgba(99, 192, 245, 0.3);
+  color: #fff;
+}
+
+/* ============================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================ */
+
+/* Focus states */
+a:focus,
+button:focus {
+  outline: 2px solid #63c0f5;
+  outline-offset: 2px;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
