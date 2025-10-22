@@ -1,0 +1,57 @@
+name: Daily Learning Blog Post
+
+on:
+  schedule:
+    - cron: '5 21 * * *'   # 16:05 CDT (UTC-5)
+    - cron: '5 22 * * *'   # 16:05 CST (UTC-6)
+  workflow_dispatch:  # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  generate_post:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout GrumpiBlogged repository
+        uses: actions/checkout@v4
+        with:
+          path: grumpiblogged
+          
+      - name: Checkout Ollama Pulse repository (for data)
+        uses: actions/checkout@v4
+        with:
+          repository: Grumpified-OGGVCT/ollama_pulse
+          path: ollama_pulse
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Gate by Chicago local time (ensure 16:05)
+        env:
+          TZ: America/Chicago
+        run: |
+          echo "Local time: $(date)";
+          HOUR=$(date +%H);
+          MINUTE=$(date +%M);
+          if [ "$HOUR" != "16" ] || [ "$MINUTE" != "05" ]; then
+            echo "Not 16:05 local — exiting without generating post.";
+            exit 0;
+          fi
+          
+      - name: Generate daily learning blog post
+        run: |
+          cd grumpiblogged
+          python scripts/generate_daily_blog.py
+          
+      - name: Commit and push blog post
+        run: |
+          cd grumpiblogged
+          git config --local user.email "action@github.com"
+          git config --local user.name "GrumpiBot"
+          git add _posts/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "feat(post): daily learning - $(date -u '+%Y-%m-%d')" && git push)
+
