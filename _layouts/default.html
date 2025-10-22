@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    {% seo %}
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+        <header>
+          <h1><a href="{{ '/' | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
+          <h2>{{ site.description | default: site.github.project_tagline }}</h2>
+        </header>
+
+        <!-- Dynamic Navigation Menu -->
+        <nav id="main-nav">
+          <ul>
+            {% for item in site.navigation %}
+              <li><a href="{{ item.url | relative_url }}" {% if page.url == item.url %}class="active"{% endif %}>{{ item.title }}</a></li>
+            {% endfor %}
+          </ul>
+        </nav>
+
+        <section id="main-content">
+          {{ content }}
+        </section>
+
+        <footer>
+          <p><small>
+            Powered by <a href="https://github.com/features/copilot">GitHub Copilot</a> & 
+            <a href="https://github.com/dependabot">Dependabot</a><br>
+            Hosted on <a href="https://pages.github.com">GitHub Pages</a> with the 
+            <a href="https://github.com/pages-themes/midnight">Midnight theme</a>
+          </small></p>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

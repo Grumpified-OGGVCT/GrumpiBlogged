@@ -1,0 +1,48 @@
+# Dependabot configuration for automated dependency updates
+# Keeps GrumpiBlogged secure and up-to-date
+
+version: 2
+
+updates:
+  # Monitor GitHub Actions workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    
+  # Monitor Ruby dependencies (Jekyll and plugins)
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "ruby"
+      - "jekyll"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    # Group Jekyll-related updates together
+    groups:
+      jekyll:
+        patterns:
+          - "jekyll*"
+      github-pages:
+        patterns:
+          - "github-pages"
+    # Ignore major version updates for stability
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
