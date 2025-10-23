@@ -1,0 +1,98 @@
+---
+layout: post
+title: "{{ title }}"
+date: {{ date }}
+categories: [ollama, ai, local-llm]
+tags: {{ tags }}
+author: The Pulse
+persona: {{ persona_name }}
+---
+
+# {{ headline }}
+
+{{ persona_emoji }} **{{ persona_description }}**
+
+---
+
+## 📰 Today's Pulse
+
+{{ intro_section }}
+
+---
+
+## 🔥 Highlights
+
+{{ highlights_section }}
+
+---
+
+## 📊 By the Numbers
+
+{{ stats_section }}
+
+{% if chart_html %}
+### 📈 Visual Insights
+
+{{ chart_html | safe }}
+{% endif %}
+
+---
+
+## 🎯 Deep Dive
+
+{{ deep_dive_section }}
+
+---
+
+## 🔍 Patterns & Trends
+
+{{ patterns_section }}
+
+---
+
+## 💡 Insights & Implications
+
+{{ insights_section }}
+
+---
+
+## 🎬 Personal Takeaway
+
+{{ takeaway_section }}
+
+{% if personality_note %}
+---
+
+*{{ personality_note }}*
+{% endif %}
+
+---
+
+## 🔬 Deep Dive: Technical Analysis
+
+{{ deep_dive_section }}
+
+---
+
+## 🔗 Cross-Project Analysis
+
+{{ cross_project_section }}
+
+---
+
+## 🎯 Practical Implications
+
+{{ practical_implications_section }}
+
+---
+
+## 🏷️ Tags & Keywords
+
+{{ seo_section }}
+
+---
+
+*Generated with ❤️ by The Pulse - Your daily guide to the Ollama ecosystem*
+
+*Follow the pulse at [GrumpiBlogged](https://grumpified-oggvct.github.io/GrumpiBlogged)*
+

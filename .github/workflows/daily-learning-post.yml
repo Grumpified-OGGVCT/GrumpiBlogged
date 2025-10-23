@@ -1,9 +1,10 @@
-name: Daily Learning Blog Post
+name: Daily Learning Blog Post (AI Research Daily)
 
 on:
   schedule:
-    - cron: '5 21 * * *'   # 16:05 CDT (UTC-5)
-    - cron: '5 22 * * *'   # 16:05 CST (UTC-6)
+    # Check every 30 minutes during morning hours (0700-0900 CT)
+    - cron: '0,30 12-14 * * *'   # 0700-0900 CDT (UTC-5)
+    - cron: '0,30 13-15 * * *'   # 0700-0900 CST (UTC-6)
   workflow_dispatch:  # Manual trigger
 
 permissions:
@@ -12,46 +13,107 @@ permissions:
 jobs:
   generate_post:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout GrumpiBlogged repository
         uses: actions/checkout@v4
         with:
           path: grumpiblogged
-          
-      - name: Checkout Ollama Pulse repository (for data)
+
+      - name: Checkout AI Research Daily repository (for data)
         uses: actions/checkout@v4
         with:
-          repository: Grumpified-OGGVCT/ollama_pulse
-          path: ollama_pulse
-          
+          repository: AccidentalJedi/AI_Research_Daily
+          path: ai_research_daily
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
-      - name: Gate by Chicago local time (ensure 16:05)
+
+      - name: Install Python dependencies
+        run: |
+          cd grumpiblogged
+          pip install -r requirements.txt
+
+      - name: Check for new data and time preference
+        id: check
         env:
           TZ: America/Chicago
         run: |
-          echo "Local time: $(date)";
-          HOUR=$(date +%H);
-          MINUTE=$(date +%M);
-          if [ "$HOUR" != "16" ] || [ "$MINUTE" != "05" ]; then
-            echo "Not 16:05 local — exiting without generating post.";
-            exit 0;
+          TODAY=$(date -u '+%Y-%m-%d')
+          HOUR=$(date +%H)
+
+          # Check if today's data file exists
+          if [ ! -f "ai_research_daily/data/aggregated/${TODAY}.json" ]; then
+            echo "No data file for today (${TODAY}) - skipping"
+            echo "should_post=false" >> $GITHUB_OUTPUT
+            exit 0
           fi
-          
-      - name: Generate daily learning blog post
+
+          # Check if we've already posted today
+          if [ -f "grumpiblogged/docs/_posts/${TODAY}-ai-research-daily.md" ]; then
+            echo "Already posted today (${TODAY}) - skipping"
+            echo "should_post=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # For manual triggers, always post
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "Manual trigger - posting immediately"
+            echo "should_post=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # For scheduled runs, prefer 0800-0830 CT window
+          if [ "$HOUR" -ge "8" ] && [ "$HOUR" -le "8" ]; then
+            echo "In preferred time window (0800-0830 CT) - posting"
+            echo "should_post=true" >> $GITHUB_OUTPUT
+          else
+            echo "Outside preferred time window (current: ${HOUR}:00 CT) - waiting"
+            echo "should_post=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate AI Research Daily blog post
+        if: steps.check.outputs.should_post == 'true'
+        id: generate
         run: |
           cd grumpiblogged
-          python scripts/generate_daily_blog.py
-          
-      - name: Commit and push blog post
+          python scripts/generate_lab_blog.py > draft.md
+          echo "draft_created=true" >> $GITHUB_OUTPUT
+
+      - name: Validate post with memory system
+        if: steps.check.outputs.should_post == 'true'
+        id: validate
         run: |
           cd grumpiblogged
+          if python scripts/should_post.py draft.md ai-research-daily; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+            echo "⛔ Post blocked by memory system (duplicate or quality issue)"
+          fi
+
+      - name: Publish blog post
+        if: steps.validate.outputs.should_publish == 'true'
+        run: |
+          cd grumpiblogged
+          TODAY=$(date -u '+%Y-%m-%d')
+          cp draft.md docs/_posts/${TODAY}-ai-research-daily.md
           git config --local user.email "action@github.com"
           git config --local user.name "GrumpiBot"
-          git add docs/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "feat(post): daily learning - $(date -u '+%Y-%m-%d')" && git push)
+          git add docs/_posts/${TODAY}-ai-research-daily.md
+          git commit -m "feat(lab): AI Research Daily - ${TODAY}"
+          git push
+
+      - name: Update memory
+        if: steps.validate.outputs.should_publish == 'true'
+        run: |
+          cd grumpiblogged
+          TODAY=$(date -u '+%Y-%m-%d')
+          SLUG="ai-research-daily-${TODAY}"
+          python scripts/append_memory.py ai-research-daily ${TODAY} ${SLUG} docs/_posts/${TODAY}-ai-research-daily.md
+          git add data/memory/
+          git commit -m "chore(memory): Update AI Research Daily memory - ${TODAY}"
+          git push
 

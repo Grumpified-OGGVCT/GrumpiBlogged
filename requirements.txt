@@ -1,0 +1,17 @@
+# GrumpiBlogged Requirements
+# Python dependencies for blog generation system
+
+# Core dependencies
+requests>=2.31.0
+python-dateutil>=2.8.2
+
+# Chart generation
+plotly>=5.18.0
+kaleido>=0.2.1  # For static image export (optional)
+
+# Template engine
+Jinja2>=3.1.2
+
+# Data processing
+pandas>=2.1.0  # Optional, for advanced data analysis
+

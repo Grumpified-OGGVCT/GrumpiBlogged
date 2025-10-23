@@ -1,0 +1,103 @@
+name: Ollama Pulse Blog Post
+
+on:
+  schedule:
+    # Check every 30 minutes throughout the day
+    - cron: '*/30 * * * *'
+  workflow_dispatch:  # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  generate_post:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout GrumpiBlogged repository
+        uses: actions/checkout@v4
+        with:
+          path: grumpiblogged
+          
+      - name: Checkout Ollama Pulse repository (for data)
+        uses: actions/checkout@v4
+        with:
+          repository: Grumpified-OGGVCT/ollama_pulse
+          path: ollama_pulse
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          cd grumpiblogged
+          pip install -r requirements.txt
+
+      - name: Check for new Ollama Pulse data
+        id: check
+        run: |
+          TODAY=$(date -u '+%Y-%m-%d')
+          
+          # Check if today's data file exists
+          if [ ! -f "ollama_pulse/data/aggregated/${TODAY}.json" ]; then
+            echo "No Ollama Pulse data for today (${TODAY}) - skipping"
+            echo "should_post=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Check if we've already posted today
+          if [ -f "grumpiblogged/docs/_posts/${TODAY}-ollama-pulse.md" ]; then
+            echo "Already posted Ollama Pulse today (${TODAY}) - skipping"
+            echo "should_post=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # New data available and no post yet - let's post!
+          echo "New Ollama Pulse data detected for ${TODAY} - posting"
+          echo "should_post=true" >> $GITHUB_OUTPUT
+          
+      - name: Generate Ollama Pulse blog post
+        if: steps.check.outputs.should_post == 'true'
+        id: generate
+        run: |
+          cd grumpiblogged
+          python scripts/generate_daily_blog.py > draft.md
+          echo "draft_created=true" >> $GITHUB_OUTPUT
+
+      - name: Validate post with memory system
+        if: steps.check.outputs.should_post == 'true'
+        id: validate
+        run: |
+          cd grumpiblogged
+          if python scripts/should_post.py draft.md ollama-pulse; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+            echo "⛔ Post blocked by memory system (duplicate or quality issue)"
+          fi
+
+      - name: Publish blog post
+        if: steps.validate.outputs.should_publish == 'true'
+        run: |
+          cd grumpiblogged
+          TODAY=$(date -u '+%Y-%m-%d')
+          cp draft.md docs/_posts/${TODAY}-ollama-pulse.md
+          git config --local user.email "action@github.com"
+          git config --local user.name "GrumpiBot"
+          git add docs/_posts/${TODAY}-ollama-pulse.md
+          git commit -m "feat(pulse): Ollama Pulse - ${TODAY}"
+          git push
+
+      - name: Update memory
+        if: steps.validate.outputs.should_publish == 'true'
+        run: |
+          cd grumpiblogged
+          TODAY=$(date -u '+%Y-%m-%d')
+          SLUG="ollama-pulse-${TODAY}"
+          python scripts/append_memory.py ollama-pulse ${TODAY} ${SLUG} docs/_posts/${TODAY}-ollama-pulse.md
+          git add data/memory/
+          git commit -m "chore(memory): Update Ollama Pulse memory - ${TODAY}"
+          git push
+
