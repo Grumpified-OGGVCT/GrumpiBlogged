@@ -26,6 +26,9 @@ from collections import defaultdict
 # Import memory system
 from memory_manager import BlogMemory
 
+# Import AI editing system
+from ai_editor import AIEditor
+
 # Paths
 OLLAMA_PULSE_DATA = Path("../ollama_pulse_temp/data")
 POSTS_DIR = Path("docs/_posts")
@@ -1290,7 +1293,7 @@ def generate_blog_post(aggregated, insights, history):
 
 
 def save_blog_post(post_content, persona, aggregated, insights):
-    """Save the blog post with dynamic Jekyll front matter"""
+    """Save the blog post with dynamic Jekyll front matter and AI editing"""
     ensure_posts_dir()
     today = get_today_date_str()
     now = datetime.now()
@@ -1324,7 +1327,53 @@ def save_blog_post(post_content, persona, aggregated, insights):
             if tag not in tags:
                 tags.append(tag)
 
-    # Jekyll front matter with dynamic headline
+    # 🤖 AI EDITING - Phase 4 Integration
+    print("\n🤖 Running AI-Powered Editing...")
+    try:
+        editor = AIEditor()
+        ai_results = editor.edit_post(
+            title=headline,
+            content=post_content,
+            persona_name=persona_name.replace('_', ' ').title(),
+            author=f"The Pulse {emoji}",
+            enable_readability=True,
+            enable_seo=True,
+            enable_grammar=True,
+            enable_fact_check=False  # Disabled for daily posts (too time-consuming)
+        )
+
+        # Extract SEO enhancements
+        seo_data = ai_results.get('seo', {})
+        if seo_data and 'error' not in seo_data:
+            # Use optimized title if better
+            if seo_data.get('seo_score', 0) > 80:
+                headline = seo_data.get('optimized_title', headline)
+
+            # Add SEO keywords to tags
+            seo_keywords = seo_data.get('keywords', [])[:5]
+            for keyword in seo_keywords:
+                if keyword not in tags and len(tags) < 15:
+                    tags.append(keyword)
+
+        # Store AI editing results for optional display
+        readability_data = ai_results.get('readability', {})
+        grammar_data = ai_results.get('grammar', {})
+
+        print(f"  ✅ SEO Score: {seo_data.get('seo_score', 'N/A')}/100")
+        print(f"  ✅ Readability: {readability_data.get('readability_level', 'N/A')}")
+        if not grammar_data.get('skipped'):
+            print(f"  ✅ Clarity: {grammar_data.get('clarity_score', 'N/A')}/100")
+
+    except Exception as e:
+        print(f"  ⚠️  AI editing skipped: {e}")
+        seo_data = {}
+        readability_data = {}
+        grammar_data = {}
+
+    # Jekyll front matter with dynamic headline and SEO metadata
+    meta_description = seo_data.get('meta_description', f"{headline} - Daily insights from The Pulse")
+    keywords = ', '.join(tags[:10])  # Top 10 tags as keywords
+
     front_matter = f"""---
 layout: post
 title: "{headline}"
@@ -1334,6 +1383,10 @@ tags: {tags}
 persona: {persona_name}
 tone: {tone}
 repo_url: https://github.com/Grumpified-OGGVCT/ollama_pulse
+description: "{meta_description[:160]}"
+keywords: "{keywords}"
+readability_level: "{readability_data.get('readability_level', 'Standard')}"
+seo_score: {seo_data.get('seo_score', 0)}
 ---
 
 """

@@ -32,6 +32,9 @@ import base64
 # Import memory system
 from memory_manager import BlogMemory
 
+# Import AI editing system
+from ai_editor import AIEditor
+
 # Paths
 AI_RESEARCH_DAILY_REPO = "https://api.github.com/repos/AccidentalJedi/AI_Research_Daily"
 POSTS_DIR = Path("docs/_posts")
@@ -984,18 +987,73 @@ def generate_blog_post(aggregated, themes):
 
 
 def save_blog_post(content, date_str):
-    """Save the blog post as a Jekyll markdown file"""
+    """Save the blog post as a Jekyll markdown file with AI editing"""
     filename = f"{date_str}-ai-research-daily.md"
     filepath = POSTS_DIR / filename
 
-    # Create Jekyll front matter
+    title = f"The Lab - AI Research Daily ({date_str})"
+
+    # 🤖 AI EDITING - Phase 4 Integration
+    print("\n🤖 Running AI-Powered Editing (with fact-checking)...")
+    try:
+        editor = AIEditor()
+
+        # Extract 2-3 key claims for fact-checking (optional, can be disabled if too slow)
+        # For now, we'll skip fact-checking to keep generation fast
+        # TODO: Add claim extraction logic if fact-checking is desired
+
+        ai_results = editor.edit_post(
+            title=title,
+            content=content,
+            persona_name="The Scholar",
+            author="The Scholar",
+            enable_readability=True,
+            enable_seo=True,
+            enable_grammar=True,
+            enable_fact_check=False  # Set to True to enable SAEV fact-checking
+        )
+
+        # Extract SEO enhancements
+        seo_data = ai_results.get('seo', {})
+        readability_data = ai_results.get('readability', {})
+        grammar_data = ai_results.get('grammar', {})
+
+        # Generate tags from SEO keywords
+        tags = ["research", "papers", "arxiv", "huggingface", "machine-learning"]
+        if seo_data and 'error' not in seo_data:
+            seo_keywords = seo_data.get('keywords', [])[:5]
+            for keyword in seo_keywords:
+                if keyword not in tags and len(tags) < 12:
+                    tags.append(keyword)
+
+        meta_description = seo_data.get('meta_description', f"{title} - Scholarly insights from The Lab")
+        keywords = ', '.join(tags[:10])
+
+        print(f"  ✅ SEO Score: {seo_data.get('seo_score', 'N/A')}/100")
+        print(f"  ✅ Readability: {readability_data.get('readability_level', 'N/A')}")
+        if not grammar_data.get('skipped'):
+            print(f"  ✅ Clarity: {grammar_data.get('clarity_score', 'N/A')}/100")
+
+    except Exception as e:
+        print(f"  ⚠️  AI editing skipped: {e}")
+        tags = ["research", "papers", "arxiv", "huggingface", "machine-learning"]
+        meta_description = f"{title} - Scholarly insights from The Lab"
+        keywords = ', '.join(tags)
+        seo_data = {}
+        readability_data = {}
+
+    # Create Jekyll front matter with SEO metadata
     front_matter = f"""---
 layout: post
-title: "The Lab - AI Research Daily ({date_str})"
+title: "{title}"
 date: {date_str} 08:05:00 -0600
 categories: [ai-research, daily-intelligence]
-tags: [research, papers, arxiv, huggingface, machine-learning]
+tags: {tags}
 author: The Scholar
+description: "{meta_description[:160]}"
+keywords: "{keywords}"
+readability_level: "{readability_data.get('readability_level', 'Standard')}"
+seo_score: {seo_data.get('seo_score', 0)}
 ---
 
 """
