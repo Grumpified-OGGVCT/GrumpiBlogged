@@ -24,7 +24,7 @@ import random
 from collections import defaultdict
 
 # Paths
-OLLAMA_PULSE_DATA = Path("../ollama_pulse/data")
+OLLAMA_PULSE_DATA = Path("../ollama_pulse_temp/data")
 POSTS_DIR = Path("docs/_posts")
 HISTORY_DIR = POSTS_DIR  # Previous posts for context
 
@@ -38,21 +38,29 @@ def get_today_date_str():
     return datetime.now().strftime("%Y-%m-%d")
 
 
-def load_ollama_pulse_data():
-    """Load today's aggregated data and insights from Ollama Pulse"""
-    today = get_today_date_str()
-    agg_file = OLLAMA_PULSE_DATA / "aggregated" / f"{today}.json"
-    insights_file = OLLAMA_PULSE_DATA / "insights" / f"{today}.json"
+def load_ollama_pulse_data(date_override=None):
+    """Load aggregated data and insights from Ollama Pulse
+
+    Args:
+        date_override: Optional date string (YYYY-MM-DD) for testing with historical data
+    """
+    target_date = date_override if date_override else get_today_date_str()
+    agg_file = OLLAMA_PULSE_DATA / "aggregated" / f"{target_date}.json"
+    insights_file = OLLAMA_PULSE_DATA / "insights" / f"{target_date}.json"
 
     aggregated = []
     if agg_file.exists():
         with open(agg_file, 'r', encoding='utf-8') as f:
             aggregated = json.load(f)
+    else:
+        print(f"⚠️  No aggregated data found at: {agg_file}")
 
     insights = {}
     if insights_file.exists():
         with open(insights_file, 'r', encoding='utf-8') as f:
             insights = json.load(f)
+    else:
+        print(f"⚠️  No insights data found at: {insights_file}")
 
     return aggregated, insights
 
@@ -653,11 +661,18 @@ def main():
     print("🚀 Generating daily blog post with 'The Pulse' persona...")
     print("=" * 60)
 
+    # Check for test mode (date override)
+    test_date = None
+    if len(sys.argv) > 1:
+        test_date = sys.argv[1]
+        print(f"🧪 TEST MODE: Using data from {test_date}")
+        print()
+
     # Load data from Ollama Pulse
-    aggregated, insights = load_ollama_pulse_data()
+    aggregated, insights = load_ollama_pulse_data(date_override=test_date)
 
     if not aggregated and not insights:
-        print("⚠️  No Ollama Pulse data available for today")
+        print("⚠️  No Ollama Pulse data available")
         sys.exit(1)
 
     print(f"📊 Loaded {len(aggregated)} aggregated items")
