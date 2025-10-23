@@ -30,7 +30,8 @@ from memory_manager import BlogMemory
 from ai_editor import AIEditor
 
 # Paths
-OLLAMA_PULSE_DATA = Path("../ollama_pulse_temp/data")
+# Support both local development and GitHub Actions
+OLLAMA_PULSE_DATA = Path(os.getenv("OLLAMA_PULSE_DATA_PATH", "../ollama_pulse_temp/data"))
 POSTS_DIR = Path("docs/_posts")
 HISTORY_DIR = POSTS_DIR  # Previous posts for context
 

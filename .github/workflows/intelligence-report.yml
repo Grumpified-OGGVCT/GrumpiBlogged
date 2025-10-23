@@ -23,8 +23,9 @@ jobs:
       
       - name: Install dependencies
         run: |
+          cd grumpiblogged_work
           python -m pip install --upgrade pip
-          pip install aiohttp networkx numpy scikit-learn plotly jinja2
+          pip install -r requirements.txt
       
       - name: Run intelligence pipeline
         env:

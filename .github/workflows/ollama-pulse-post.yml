@@ -61,6 +61,8 @@ jobs:
       - name: Generate Ollama Pulse blog post
         if: steps.check.outputs.should_post == 'true'
         id: generate
+        env:
+          OLLAMA_PULSE_DATA_PATH: ../ollama_pulse/data
         run: |
           cd grumpiblogged
           python scripts/generate_daily_blog.py > draft.md
