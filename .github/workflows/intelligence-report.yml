@@ -39,7 +39,7 @@ jobs:
           cd grumpiblogged_work
           git config user.name "GrumpiBot Intelligence"
           git config user.email "grumpibot@grumpiblogged.com"
-          git add docs/_posts/*.md data/intelligence/visualizations/*.html
+          git add docs/_posts/*.md docs/assets/visualizations/*.html
           git commit -m "feat(intelligence): Daily intelligence report $(date +'%Y-%m-%d')" || echo "No changes to commit"
           git push
 

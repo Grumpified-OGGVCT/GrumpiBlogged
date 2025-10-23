@@ -266,13 +266,15 @@ class IntelligenceBlogGenerator:
     
     async def _create_visualizations(self, data: dict) -> dict:
         """Phase 3: Create interactive visualizations"""
-        
+
         print("📊 Creating visualizations...")
-        
+
         visualizer = IntelligenceVisualizer(dark_mode=True)
-        
-        output_dir = "grumpiblogged_work/data/intelligence/visualizations"
-        saved_files = visualizer.save_all_visualizations(data, output_dir)
+
+        # Save to docs/assets/visualizations for Jekyll
+        output_dir = Path("docs/assets/visualizations")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        saved_files = visualizer.save_all_visualizations(data, str(output_dir))
         
         print(f"   ✅ Created {len(saved_files)} visualizations")
         for viz_type, path in saved_files.items():
@@ -282,22 +284,24 @@ class IntelligenceBlogGenerator:
     
     async def _generate_blog_post(self, report: IntelligenceReport, visualizations: dict) -> str:
         """Phase 4: Generate final blog post"""
-        
+
         print("📝 Generating blog post...")
-        
+
         # Build blog post content
         content = self._build_blog_content(report, visualizations)
-        
-        # Save to file
+
+        # Save to docs/_posts for Jekyll
         timestamp = datetime.now().strftime("%Y-%m-%d")
-        filename = f"grumpiblogged_work/docs/_posts/{timestamp}-intelligence-report.md"
-        
+        posts_dir = Path("docs/_posts")
+        posts_dir.mkdir(parents=True, exist_ok=True)
+        filename = posts_dir / f"{timestamp}-intelligence-report.md"
+
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(content)
-        
+
         print(f"   ✅ Blog post saved: {filename}")
-        
-        return filename
+
+        return str(filename)
     
     def _build_blog_content(self, report: IntelligenceReport, visualizations: dict) -> str:
         """Build complete blog post content"""
