@@ -4,9 +4,37 @@
 @import "{{ site.theme }}";
 
 /* ============================================
-   GRUMPIBLOGGED - MODERN REDESIGN v2.0
+   GRUMPIBLOGGED - MODERN REDESIGN v2.1
    A premium dark theme blog experience
+   With amber/crimson accent differentiation
    ============================================ */
+
+/* ============================================
+   COLOR VARIABLES
+   ============================================ */
+
+:root {
+  /* Base theme colors */
+  --color-bg-dark: #0f0f0f;
+  --color-bg-medium: #1a1a1a;
+  --color-text-primary: #e8e8e8;
+  --color-text-secondary: #d0d0d0;
+  --color-text-muted: #888;
+
+  /* Primary accent (cyan) */
+  --color-accent-primary: #63c0f5;
+  --color-accent-primary-dark: #4fa8d5;
+
+  /* Ollama Pulse accent (amber) */
+  --color-amber: #FFA500;
+  --color-amber-dark: #FF8C00;
+  --color-amber-light: #FFB733;
+
+  /* AI Research Daily accent (crimson) */
+  --color-crimson: #DC143C;
+  --color-crimson-dark: #B22222;
+  --color-crimson-light: #E94B6B;
+}
 
 /* ============================================
    GLOBAL RESETS & BASE STYLES
@@ -17,7 +45,7 @@
 }
 
 body {
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-medium) 50%, var(--color-bg-dark) 100%);
   background-attachment: fixed;
   min-height: 100vh;
   padding: 0;
@@ -186,7 +214,7 @@ header h2 {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #63c0f5, #4fa8d5, #63c0f5);
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-primary-dark), var(--color-accent-primary));
   background-size: 200% 100%;
   animation: shimmer 3s linear infinite;
 }
@@ -201,6 +229,143 @@ header h2 {
   transform: translateY(-4px);
   box-shadow: 0 12px 48px rgba(99, 192, 245, 0.2);
   border-color: rgba(99, 192, 245, 0.3);
+}
+
+/* ============================================
+   POST TYPE DIFFERENTIATION - AMBER & CRIMSON
+   ============================================ */
+
+/* Ollama Pulse posts - Amber accents */
+.post-ollama-pulse::before {
+  background: linear-gradient(90deg, var(--color-amber), var(--color-amber-dark), var(--color-amber));
+  background-size: 200% 100%;
+}
+
+.post-ollama-pulse:hover {
+  box-shadow: 0 12px 48px rgba(255, 165, 0, 0.2);
+  border-color: rgba(255, 165, 0, 0.3);
+}
+
+.post-ollama-pulse .post-title {
+  color: var(--color-amber-light);
+}
+
+.post-ollama-pulse .post-title a {
+  color: var(--color-amber-light);
+}
+
+.post-ollama-pulse .post-title a:hover {
+  color: var(--color-amber);
+}
+
+.post-ollama-pulse .post-author {
+  color: var(--color-amber);
+  font-weight: 600;
+}
+
+.post-ollama-pulse .post-persona {
+  color: var(--color-amber-dark);
+  font-style: italic;
+}
+
+.post-ollama-pulse .tag {
+  background: rgba(255, 165, 0, 0.1);
+  color: var(--color-amber-light);
+  border-color: rgba(255, 165, 0, 0.2);
+}
+
+.post-ollama-pulse .tag:hover {
+  background: rgba(255, 165, 0, 0.2);
+  border-color: rgba(255, 165, 0, 0.4);
+}
+
+.post-ollama-pulse .post-repo {
+  border-left-color: var(--color-amber);
+  background: rgba(255, 165, 0, 0.05);
+}
+
+.post-ollama-pulse .post-repo a {
+  color: var(--color-amber-light);
+}
+
+.post-ollama-pulse .post-repo a:hover {
+  color: var(--color-amber);
+}
+
+/* AI Research Daily posts - Crimson accents */
+.post-ai-research::before {
+  background: linear-gradient(90deg, var(--color-crimson), var(--color-crimson-dark), var(--color-crimson));
+  background-size: 200% 100%;
+}
+
+.post-ai-research:hover {
+  box-shadow: 0 12px 48px rgba(220, 20, 60, 0.2);
+  border-color: rgba(220, 20, 60, 0.3);
+}
+
+.post-ai-research .post-title {
+  color: var(--color-crimson-light);
+}
+
+.post-ai-research .post-title a {
+  color: var(--color-crimson-light);
+}
+
+.post-ai-research .post-title a:hover {
+  color: var(--color-crimson);
+}
+
+.post-ai-research .post-author {
+  color: var(--color-crimson);
+  font-weight: 600;
+}
+
+.post-ai-research .post-persona {
+  color: var(--color-crimson-dark);
+  font-style: italic;
+}
+
+.post-ai-research .tag {
+  background: rgba(220, 20, 60, 0.1);
+  color: var(--color-crimson-light);
+  border-color: rgba(220, 20, 60, 0.2);
+}
+
+.post-ai-research .tag:hover {
+  background: rgba(220, 20, 60, 0.2);
+  border-color: rgba(220, 20, 60, 0.4);
+}
+
+.post-ai-research .post-repo {
+  border-left-color: var(--color-crimson);
+  background: rgba(220, 20, 60, 0.05);
+}
+
+.post-ai-research .post-repo a {
+  color: var(--color-crimson-light);
+}
+
+.post-ai-research .post-repo a:hover {
+  color: var(--color-crimson);
+}
+
+/* Post summary cards on listing pages */
+.post-summary.post-ollama-pulse::before {
+  background: linear-gradient(180deg, var(--color-amber), var(--color-amber-dark));
+}
+
+.post-summary.post-ollama-pulse:hover {
+  box-shadow: 0 8px 32px rgba(255, 165, 0, 0.15);
+  border-color: rgba(255, 165, 0, 0.3);
+}
+
+.post-summary.post-ai-research::before {
+  background: linear-gradient(180deg, var(--color-crimson), var(--color-crimson-dark));
+}
+
+.post-summary.post-ai-research:hover {
+  box-shadow: 0 8px 32px rgba(220, 20, 60, 0.15);
+  border-color: rgba(220, 20, 60, 0.3);
 }
 
 .post-header, .experiment-header {

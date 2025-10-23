@@ -4,9 +4,324 @@ title: Experiments
 permalink: /experiments/
 ---
 
-# Vibe-Based Coding Experiments
+# 🧪 Automated Blogging Infrastructure
 
-Explore the collection of coding experiments, prototypes, and real-world AI adventures.
+**Welcome to the lab** where AI-powered automation meets content creation. This page showcases the complete automated blogging system that powers GrumpiBlogged—a sophisticated infrastructure that generates, validates, and publishes blog posts with zero manual intervention.
+
+---
+
+## 📡 **Three Automated Blog Sources**
+
+### 💡 **Ollama Pulse** (Daily AI Ecosystem Updates)
+- **Schedule**: Every 30 minutes, posts when new data available
+- **Source**: [Ollama Pulse Repository](https://github.com/Grumpified-OGGVCT/ollama_pulse)
+- **Content**: Daily updates from the Ollama ecosystem—new models, community projects, trending repositories
+- **Persona System**: 6 rotating personas (Hype Caster, Mechanic, Curious Analyst, Trend Spotter, Informed Enthusiast, Scholar)
+- **Visual Identity**: Amber accent colors (#FFA500)
+- **Latest Post**: Check the [Posts page](/GrumpiBlogged/posts/) for today's Ollama Pulse
+
+### 📚 **The Lab - AI Research Daily**
+- **Schedule**: Daily at 08:05 CT (morning research digest)
+- **Source**: [AI Research Daily Repository](https://github.com/AccidentalJedi/AI_Research_Daily)
+- **Content**: Curated AI research papers, arXiv submissions, HuggingFace models, scholarly analysis
+- **Persona**: The Scholar (rigorous, evidence-based, peer-review focused)
+- **Visual Identity**: Crimson accent colors (#DC143C)
+- **Latest Post**: Check the [Posts page](/GrumpiBlogged/posts/) for today's research digest
+
+### 🔮 **Future Sources** (Coming Soon)
+- **GitHub Trending**: Daily digest of trending repositories
+- **AI News Aggregator**: Curated news from multiple AI sources
+- **Community Highlights**: User-submitted projects and experiments
+
+---
+
+## 🛠️ **Enhancement Systems**
+
+### 🧠 **Memory & Continuity System**
+**Purpose**: Prevent duplicate posts and maintain context across conversations
+
+**Components**:
+- **SHA256 Fingerprinting**: Each post gets a unique hash to detect duplicates
+- **Joke Cooldown**: 7-day blacklist prevents repeating humor
+- **Context Tracking**: Remembers previous topics, themes, and writing patterns
+- **Validation Pipeline**: `should_post.py` checks every post before publishing
+
+**Files**:
+- `scripts/memory_manager.py` (300 lines) - Core memory management
+- `scripts/should_post.py` (70 lines) - Duplicate detection & validation
+- `scripts/append_memory.py` (60 lines) - Memory updater
+- `data/memory/ollama-pulse_memory.json` - Ollama Pulse history
+- `data/memory/ai-research-daily_memory.json` - AI Research Daily history
+
+---
+
+### 📊 **Chart Generation (Plotly)**
+**Purpose**: Create interactive visualizations embedded in blog posts
+
+**Capabilities**:
+- **Tag Trend Charts**: Track popular tags over time (7-day rolling window)
+- **Model Count Charts**: Visualize model mentions and popularity
+- **Pattern Growth Charts**: Show emerging patterns in the ecosystem
+- **Research Theme Charts**: Analyze research topic distribution
+
+**Technology**: Plotly 5.18+ for interactive HTML/JavaScript charts
+
+**Files**:
+- `scripts/chart_generator.py` (300 lines) - Chart generation engine
+
+**Example Output**:
+```html
+<div id="tag-trend-chart"></div>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+  // Interactive chart embedded directly in markdown
+</script>
+```
+
+---
+
+### 🎭 **Personality System**
+**Purpose**: Inject persona-specific humor, anecdotes, and cultural references
+
+**6 Personas**:
+1. **Hype Caster** (💡) - Energetic, forward-looking, trend-focused
+2. **Mechanic** (🔧) - Practical, detail-oriented, fix-it mindset
+3. **Curious Analyst** (🔍) - Questioning, hypothesis-driven, experimental
+4. **Trend Spotter** (📈) - Data-driven, pattern-recognition, big-picture
+5. **Informed Enthusiast** (🎯) - Balanced, context-aware, nuanced
+6. **Scholar** (📚) - Rigorous, evidence-based, peer-review focused
+
+**Content Pool**:
+- **35 Jokes**: Persona-specific humor (e.g., "llm-latté", "neural-network-ninja")
+- **24 Anecdotes**: Personal stories and observations
+- **4 Cultural References**: Shared knowledge and memes
+
+**Smart Selection**:
+- Blacklist prevents repeating jokes within 7 days
+- Persona-appropriate content matching
+- Context-aware injection into blog posts
+
+**Files**:
+- `scripts/personality.py` (250 lines) - Personality engine
+
+---
+
+### 📝 **Template System (Jinja2)**
+**Purpose**: Structured, consistent blog post generation
+
+**Templates**:
+- `templates/ollama_pulse_post.j2` - Ollama Pulse structure
+- `templates/ai_research_post.j2` - AI Research Daily structure
+
+**Features**:
+- **Dynamic Sections**: Intro, highlights, deep dives, conclusions
+- **Metadata Injection**: Tags, personas, dates, repo links
+- **Chart Embedding**: Automatic chart placement
+- **Personality Integration**: Joke/anecdote insertion points
+
+**Technology**: Jinja2 3.1+ template engine
+
+---
+
+## ⚙️ **GitHub Actions Automation**
+
+### 🔄 **Ollama Pulse Workflow**
+**File**: `.github/workflows/ollama-pulse-post.yml`
+
+**Pipeline**:
+1. **Check for new data** (every 30 minutes)
+2. **Generate blog post** (`generate_daily_blog.py`)
+3. **Validate with memory** (`should_post.py`)
+4. **Publish to `docs/_posts/`** (if validation passes)
+5. **Update memory** (`append_memory.py`)
+6. **Commit and push** (automated Git operations)
+
+**Smart Scheduling**:
+- Runs every 30 minutes
+- Only posts when new Ollama Pulse data exists
+- Prevents duplicate posts (checks `docs/_posts/` directory)
+
+---
+
+### 🔬 **AI Research Daily Workflow**
+**File**: `.github/workflows/daily-learning-post.yml`
+
+**Pipeline**:
+1. **Check for new data** (every 30 minutes, 07:00-09:00 CT)
+2. **Generate blog post** (`generate_lab_blog.py`)
+3. **Validate with memory** (`should_post.py`)
+4. **Publish to `docs/_posts/`** (if validation passes)
+5. **Update memory** (`append_memory.py`)
+6. **Commit and push** (automated Git operations)
+
+**Time Preference**:
+- Prefers 08:00-08:30 CT window (morning research digest)
+- Manual trigger available for testing
+
+---
+
+### 🏗️ **Jekyll Build & Deploy**
+**File**: `.github/workflows/jekyll-gh-pages.yml`
+
+**Pipeline**:
+1. **Checkout repository**
+2. **Setup Ruby 3.1**
+3. **Build Jekyll site** (from `docs/` directory)
+4. **Upload artifact**
+5. **Deploy to GitHub Pages**
+
+**Result**: Static site at [https://grumpified-oggvct.github.io/GrumpiBlogged/](https://grumpified-oggvct.github.io/GrumpiBlogged/)
+
+---
+
+## 📈 **System Architecture**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    GitHub Actions (Cloud)                    │
+├─────────────────────────────────────────────────────────────┤
+│                                                               │
+│  ┌──────────────┐      ┌──────────────┐                     │
+│  │ Ollama Pulse │      │ AI Research  │                     │
+│  │   Workflow   │      │    Daily     │                     │
+│  └──────┬───────┘      └──────┬───────┘                     │
+│         │                     │                              │
+│         ├─────────────────────┤                              │
+│         │                     │                              │
+│         ▼                     ▼                              │
+│  ┌─────────────────────────────────┐                        │
+│  │   Python Generation Scripts     │                        │
+│  ├─────────────────────────────────┤                        │
+│  │ • generate_daily_blog.py        │                        │
+│  │ • generate_lab_blog.py          │                        │
+│  │ • memory_manager.py             │                        │
+│  │ • chart_generator.py            │                        │
+│  │ • personality.py                │                        │
+│  └─────────────┬───────────────────┘                        │
+│                │                                             │
+│                ▼                                             │
+│  ┌─────────────────────────────────┐                        │
+│  │    Validation & Memory          │                        │
+│  ├─────────────────────────────────┤                        │
+│  │ • should_post.py (duplicate)    │                        │
+│  │ • append_memory.py (tracking)   │                        │
+│  └─────────────┬───────────────────┘                        │
+│                │                                             │
+│                ▼                                             │
+│  ┌─────────────────────────────────┐                        │
+│  │   Markdown Post Generation      │                        │
+│  ├─────────────────────────────────┤                        │
+│  │ • Jinja2 templates              │                        │
+│  │ • Plotly charts (HTML/JS)       │                        │
+│  │ • Persona-specific content      │                        │
+│  └─────────────┬───────────────────┘                        │
+│                │                                             │
+│                ▼                                             │
+│  ┌─────────────────────────────────┐                        │
+│  │   Git Commit & Push             │                        │
+│  │   (docs/_posts/*.md)            │                        │
+│  └─────────────┬───────────────────┘                        │
+└────────────────┼─────────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Jekyll Build (GitHub)                     │
+├─────────────────────────────────────────────────────────────┤
+│  • Markdown → HTML conversion                               │
+│  • Theme application (Midnight + custom SCSS)               │
+│  • Static site generation                                   │
+└─────────────────┬───────────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────────┐
+│              GitHub Pages (Static Hosting)                   │
+├─────────────────────────────────────────────────────────────┤
+│  • Serves HTML/CSS/JS                                       │
+│  • Interactive Plotly charts                                │
+│  • Amber/Crimson visual differentiation                     │
+│  • Dark theme with accent colors                            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🎨 **Visual Design System**
+
+### **Color Palette**
+- **Base Theme**: Dark (#0f0f0f to #1a1a1a gradient)
+- **Primary Accent**: Cyan (#63c0f5) - Navigation, links, headers
+- **Ollama Pulse**: Amber (#FFA500) - Warm orange highlights
+- **AI Research Daily**: Crimson (#DC143C) - Deep red highlights
+
+### **Typography**
+- **Headers**: Gradient text effects, -0.5px letter spacing
+- **Body**: 1.05rem, 1.8 line-height, #d0d0d0 color
+- **Code**: Monospace, dark background, cyan borders
+
+### **Components**
+- **Post Cards**: Glassmorphism effect, hover animations
+- **Tags**: Pill-shaped chips with hover effects
+- **Status Badges**: Gradient backgrounds, uppercase text
+- **Charts**: Interactive Plotly visualizations
+
+---
+
+## 📊 **Success Metrics**
+
+**Before Enhancement**: ⭐⭐⭐⭐ (4/5 stars)
+- Basic automation working
+- Manual content generation
+- No duplicate prevention
+- Limited visual variety
+
+**After Enhancement**: ⭐⭐⭐⭐⭐ (5/5 stars)
+- Full automation (zero manual intervention)
+- Memory-based duplicate prevention
+- Interactive charts and visualizations
+- Persona-specific humor and anecdotes
+- Template-driven consistency
+- Visual differentiation (amber/crimson accents)
+
+---
+
+## 🚀 **Future Enhancements**
+
+### **Phase 2: Advanced Analytics**
+- Sentiment analysis of blog posts
+- Topic clustering and trend detection
+- Engagement metrics (if comments enabled)
+- A/B testing different personas
+
+### **Phase 3: Multi-Source Integration**
+- RSS feed aggregation
+- Twitter/X API integration
+- Reddit trending posts
+- Hacker News top stories
+
+### **Phase 4: AI-Powered Editing**
+- Grammar and style checking
+- SEO optimization
+- Readability scoring
+- Automated fact-checking
+
+---
+
+## 📚 **Documentation**
+
+All implementation details, code, and documentation available in the repository:
+
+- **Main Repo**: [GrumpiBlogged](https://github.com/Grumpified-OGGVCT/GrumpiBlogged)
+- **Data Sources**:
+  - [Ollama Pulse](https://github.com/Grumpified-OGGVCT/ollama_pulse)
+  - [AI Research Daily](https://github.com/AccidentalJedi/AI_Research_Daily)
+
+**Key Documentation Files**:
+- `COMPLETE_IMPLEMENTATION_SUMMARY.md` - Full system overview
+- `MEMORY_SYSTEM_IMPLEMENTATION.md` - Memory system guide
+- `QUICK_START_GUIDE.md` - 5-minute setup
+- `NEXT_THREAD_HANDOFF.md` - Integration roadmap
+
+---
 
 <div class="experiments-list">
   {% for experiment in site.experiments %}
@@ -27,5 +342,7 @@ Explore the collection of coding experiments, prototypes, and real-world AI adve
 </div>
 
 {% if site.experiments.size == 0 %}
-  <p>No experiments yet. Coming soon!</p>
+  <p class="text-center" style="margin-top: 60px; color: #888;">
+    <em>Individual experiments coming soon! For now, explore the automated blogging infrastructure above.</em>
+  </p>
 {% endif %}
