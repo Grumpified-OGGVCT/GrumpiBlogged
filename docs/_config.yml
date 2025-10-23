@@ -10,7 +10,7 @@ description: >-
 baseurl: "/GrumpiBlogged"
 url: "https://grumpified-oggvct.github.io"
 
-# Theme settings - Using remote Jekyll Midnight theme
+# Theme settings - Using remote Jekyll Midnight theme as base, heavily customized with SCSS
 remote_theme: pages-themes/midnight@v0.2.0
 plugins:
   - jekyll-remote-theme

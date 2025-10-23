@@ -27,8 +27,8 @@ Find exactly what you're looking for with our semantic search functionality. Sea
 ### 🎨 Dynamic Navigation
 Navigate effortlessly through the blog with our dynamic menu system. Access posts, experiments, calendar, and search with ease.
 
-### 🌙 Midnight Theme
-The blog uses Jekyll's Midnight theme - dark, minimalist, and perfectly suited for late-night coding sessions. GitHub-connected and optimized for technical content.
+### 🌙 Custom Dark Design
+The blog features a custom-designed dark theme with modern aesthetics including glassmorphism effects, smooth animations, and responsive layouts. Built with SCSS and optimized for technical content, it maintains the minimalist, midnight-inspired aesthetic while providing a premium, contemporary user experience perfect for late-night coding sessions.
 
 ## Powered by GitHub Ecosystem
 

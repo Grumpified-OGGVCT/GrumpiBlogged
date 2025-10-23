@@ -61,7 +61,7 @@ This experiment explores creating a fully automated blogging system that integra
 
 ### Key Components
 
-1. **Jekyll Configuration**: Static site generator with Midnight theme
+1. **Jekyll Configuration**: Static site generator with custom SCSS dark theme
 2. **GitHub Actions Workflows**: Automated posting and moderation
 3. **Semantic Search**: Client-side JavaScript search functionality
 4. **Calendar Integration**: Timeline view of all content

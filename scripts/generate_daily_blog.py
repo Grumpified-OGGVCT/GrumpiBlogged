@@ -219,6 +219,132 @@ def generate_official_section(official, persona):
     return "".join(lines)
 
 
+def generate_project_commentary(entry, persona_name):
+    """Generate unique, insightful commentary for a specific project"""
+    summary = entry.get('summary', '')
+    highlights = entry.get('highlights', [])
+
+    # Extract star count from highlights
+    stars = 0
+    language = ''
+    for h in highlights:
+        if 'stars:' in h.lower():
+            try:
+                stars = int(h.split(':')[1].strip())
+            except:
+                pass
+        if 'language:' in h.lower():
+            language = h.split(':')[1].strip()
+
+    # Analyze the summary for key features
+    summary_lower = summary.lower()
+
+    # Identify key characteristics
+    is_privacy_focused = any(word in summary_lower for word in ['privacy', 'offline', 'local', 'on-device', 'private'])
+    is_security_focused = any(word in summary_lower for word in ['security', 'scam', 'protection', 'safe'])
+    is_performance_focused = any(word in summary_lower for word in ['fast', 'efficient', 'lightweight', 'optimized'])
+    is_ui_tool = any(word in summary_lower for word in ['ui', 'interface', 'visual', 'dashboard', 'frontend'])
+    is_integration = any(word in summary_lower for word in ['integration', 'connect', 'bridge', 'api'])
+    is_framework = any(word in summary_lower for word in ['framework', 'library', 'toolkit', 'suite'])
+
+    # Determine maturity level based on stars
+    if stars == 0:
+        maturity = "brand_new"
+    elif stars < 10:
+        maturity = "emerging"
+    elif stars < 100:
+        maturity = "growing"
+    elif stars < 1000:
+        maturity = "proven"
+    else:
+        maturity = "established"
+
+    # Generate persona-specific commentary
+    commentary_templates = {
+        'hype_caster': {
+            'brand_new': [
+                f"Fresh off the press (0 stars) but the concept is exciting: {summary[:100]}... If this delivers, it could be a game-changer.",
+                f"Just launched today with zero stars, but don't let that fool you—{summary[:100]}... Early adopters, this is your moment.",
+                f"Brand new project tackling {summary[:80]}... The timing is perfect for this kind of innovation."
+            ],
+            'emerging': [
+                f"Still early ({stars} stars) but gaining traction: {summary[:100]}... Watch this space.",
+                f"Small but mighty ({stars} stars)—{summary[:100]}... This is the kind of project that could explode.",
+                f"Just {stars} stars so far, but {summary[:100]}... The potential is massive."
+            ],
+            'proven': [
+                f"{stars:,} stars and counting! {summary[:100]}... The community has spoken—this works.",
+                f"Battle-tested with {stars:,} stars: {summary[:100]}... This is production-ready.",
+                f"The {stars:,} stars tell the story: {summary[:100]}... Proven quality."
+            ],
+            'established': [
+                f"{stars:,} stars don't lie—this is a cornerstone project. {summary[:100]}... Industry-grade quality.",
+                f"With {stars:,} stars, this is basically essential infrastructure. {summary[:100]}... If you're not using this, you should be.",
+                f"A heavyweight with {stars:,} stars: {summary[:100]}... This is what mature, reliable tooling looks like."
+            ]
+        },
+        'mechanic': {
+            'brand_new': [
+                f"New tool (0 stars) that solves a real problem: {summary[:100]}... Practical and focused.",
+                f"Just released, but the use case is clear: {summary[:100]}... This is the kind of utility we need.",
+                f"Fresh project addressing {summary[:80]}... Simple, practical, useful."
+            ],
+            'proven': [
+                f"{stars:,} stars means it's been tested in the field: {summary[:100]}... Reliable and production-ready.",
+                f"Proven with {stars:,} stars: {summary[:100]}... This gets the job done.",
+                f"{stars:,} developers can't be wrong: {summary[:100]}... Solid, dependable tool."
+            ]
+        },
+        'curious_analyst': {
+            'brand_new': [
+                f"Interesting experiment (0 stars): {summary[:100]}... The approach is novel and worth studying.",
+                f"New project exploring {summary[:80]}... The methodology here is fascinating.",
+                f"Just launched with an intriguing premise: {summary[:100]}... Let's see how this evolves."
+            ],
+            'established': [
+                f"With {stars:,} stars, this represents a mature approach: {summary[:100]}... The design patterns here are instructive.",
+                f"{stars:,} stars indicate widespread adoption: {summary[:100]}... This is a case study in successful open source.",
+                f"The {stars:,}-star rating reflects {summary[:80]}... There's a lot to learn from this project's trajectory."
+            ]
+        }
+    }
+
+    # Add special commentary for specific characteristics
+    special_notes = []
+
+    if is_privacy_focused:
+        special_notes.append("Privacy-first design means your data never leaves your machine—critical for sensitive use cases.")
+
+    if is_security_focused:
+        special_notes.append("Built-in security features address real threats in the ecosystem.")
+
+    if is_performance_focused:
+        special_notes.append("Performance optimization is a first-class concern here, not an afterthought.")
+
+    if language and language in ['Rust', 'Go', 'C++']:
+        special_notes.append(f"{language} implementation suggests serious attention to performance and reliability.")
+
+    if language == 'Lua' and 'vim' in summary_lower or 'neovim' in summary_lower:
+        special_notes.append("The Vim/Neovim community is notoriously selective—this level of adoption signals genuine quality.")
+
+    # Select appropriate template
+    persona_templates = commentary_templates.get(persona_name, commentary_templates['hype_caster'])
+    maturity_templates = persona_templates.get(maturity, persona_templates.get('brand_new', []))
+
+    if not maturity_templates:
+        # Fallback
+        base_commentary = f"{summary[:120]}..."
+    else:
+        import random
+        base_commentary = random.choice(maturity_templates)
+
+    # Add special note if applicable
+    if special_notes:
+        base_commentary += " " + random.choice(special_notes)
+
+    return base_commentary
+
+
 def generate_community_section(tools, persona):
     """Generate section about community projects with deep analysis"""
     if not tools:
@@ -236,10 +362,6 @@ def generate_community_section(tools, persona):
 
     lines = [intros.get(persona_name, intros['informed_enthusiast'])]
 
-    # Group by source for better organization
-    github_tools = [t for t in tools if t.get('source') == 'github']
-    reddit_tools = [t for t in tools if t.get('source') == 'reddit']
-
     # Highlight top projects with analysis
     top_tools = tools[:5]
 
@@ -248,8 +370,18 @@ def generate_community_section(tools, persona):
         url = entry.get('url', '#')
         highlights = entry.get('highlights', [])
         source = entry.get('source', 'unknown')
-        stars = entry.get('stars', 0)
-        language = entry.get('language', '')
+
+        # Extract stars and language from highlights
+        stars = 0
+        language = ''
+        for h in highlights:
+            if 'stars:' in h.lower():
+                try:
+                    stars = int(h.split(':')[1].strip())
+                except:
+                    pass
+            if 'language:' in h.lower():
+                language = h.split(':')[1].strip()
 
         lines.append(f"**{i}. [{title}]({url})** (via {source})")
 
@@ -258,22 +390,9 @@ def generate_community_section(tools, persona):
             lines.append(f" — {stars:,} ⭐ • {language}")
         lines.append("\n\n")
 
-        # Add insightful commentary based on persona
-        if persona_name == 'hype_caster' and highlights:
-            lines.append(f"   **Why this matters**: {highlights[0]}. This is the kind of tool that could become essential.\n\n")
-        elif persona_name == 'mechanic':
-            lines.append(f"   **Practical use**: ")
-            if highlights:
-                lines.append(f"{highlights[0]}. ")
-            lines.append("Solves a real problem.\n\n")
-        elif persona_name == 'curious_analyst':
-            lines.append(f"   **Interesting because**: ")
-            if highlights:
-                lines.append(f"{highlights[0]}. ")
-            lines.append("This approach is worth studying.\n\n")
-        else:
-            if highlights:
-                lines.append(f"   {highlights[0]}\n\n")
+        # Generate unique commentary for this project
+        commentary = generate_project_commentary(entry, persona_name)
+        lines.append(f"   **Why this matters**: {commentary}\n\n")
 
     # Add closing insight
     closings = {
@@ -564,6 +683,128 @@ def generate_headline(aggregated, insights, persona):
     return f"{emoji} " + random.choice(headlines.get(persona_name, headlines['informed_enthusiast']))
 
 
+def generate_seo_section(aggregated, insights, persona):
+    """Generate SEO-optimized keywords and hashtags section"""
+    persona_name, emoji, _ = persona
+
+    # Core keywords that always apply
+    keywords = ["Ollama", "LocalAI", "OpenSource", "MachineLearning", "ArtificialIntelligence"]
+    hashtags = ["#Ollama", "#LocalAI", "#OpenSourceAI", "#MachineLearning", "#AI"]
+
+    # Extract trending topics from patterns
+    patterns = insights.get('patterns', {})
+    if patterns:
+        for pattern_name, items in patterns.items():
+            # Add pattern as keyword and hashtag
+            clean_pattern = pattern_name.replace('_', ' ').title().replace(' ', '')
+            keywords.append(clean_pattern)
+            hashtags.append(f"#{clean_pattern}")
+
+    # Analyze aggregated data for technology keywords
+    tech_keywords = set()
+    for entry in aggregated[:10]:  # Top 10 items
+        summary = entry.get('summary', '').lower()
+        title = entry.get('title', '').lower()
+        combined = summary + ' ' + title
+
+        # Extract technology-specific keywords
+        if 'voice' in combined or 'speech' in combined or 'audio' in combined:
+            tech_keywords.add('VoiceAI')
+            hashtags.append('#VoiceAI')
+        if 'vision' in combined or 'image' in combined or 'visual' in combined:
+            tech_keywords.add('ComputerVision')
+            hashtags.append('#ComputerVision')
+        if 'code' in combined or 'programming' in combined or 'developer' in combined:
+            tech_keywords.add('CodeGeneration')
+            hashtags.append('#AIcoding')
+        if 'chat' in combined or 'conversation' in combined:
+            tech_keywords.add('Chatbots')
+            hashtags.append('#Chatbots')
+        if 'rag' in combined or 'retrieval' in combined:
+            tech_keywords.add('RAG')
+            hashtags.append('#RAG')
+        if 'agent' in combined or 'autonomous' in combined:
+            tech_keywords.add('AIAgents')
+            hashtags.append('#AIAgents')
+        if 'embedding' in combined or 'vector' in combined:
+            tech_keywords.add('Embeddings')
+            hashtags.append('#VectorDB')
+        if 'fine-tun' in combined or 'training' in combined:
+            tech_keywords.add('FineTuning')
+            hashtags.append('#FineTuning')
+        if 'quantiz' in combined:
+            tech_keywords.add('Quantization')
+            hashtags.append('#Quantization')
+        if 'privacy' in combined or 'secure' in combined or 'private' in combined:
+            tech_keywords.add('PrivacyFirst')
+            hashtags.append('#PrivacyFirst')
+        if 'edge' in combined or 'iot' in combined or 'embedded' in combined:
+            tech_keywords.add('EdgeAI')
+            hashtags.append('#EdgeAI')
+        if 'multimodal' in combined:
+            tech_keywords.add('MultimodalAI')
+            hashtags.append('#MultimodalAI')
+
+    keywords.extend(sorted(tech_keywords))
+
+    # Add persona-specific trending keywords
+    if persona_name == 'hype_caster':
+        keywords.extend(['Innovation', 'Breakthrough', 'GameChanger'])
+        hashtags.extend(['#AIInnovation', '#TechBreakthrough', '#FutureOfAI'])
+    elif persona_name == 'mechanic':
+        keywords.extend(['Practical', 'Production', 'DevTools'])
+        hashtags.extend(['#DevTools', '#ProductionReady', '#PracticalAI'])
+    elif persona_name == 'curious_analyst':
+        keywords.extend(['Research', 'Experimental', 'Analysis'])
+        hashtags.extend(['#AIResearch', '#ExperimentalAI', '#DeepDive'])
+    elif persona_name == 'trend_spotter':
+        keywords.extend(['Trends', 'Patterns', 'DataDriven'])
+        hashtags.extend(['#AITrends', '#TechPatterns', '#DataDriven'])
+
+    # Add current year for freshness
+    from datetime import datetime
+    current_year = datetime.now().year
+    keywords.append(f"AI{current_year}")
+    hashtags.append(f"#AI{current_year}")
+
+    # Add general trending AI hashtags
+    trending_hashtags = [
+        '#GenerativeAI', '#LLM', '#LargeLanguageModels',
+        '#AITools', '#AIApplications', '#OpenSourceML',
+        '#SelfHosted', '#PrivateAI', '#AIForDevelopers'
+    ]
+    hashtags.extend(trending_hashtags)
+
+    # Remove duplicates while preserving order
+    seen_keywords = set()
+    unique_keywords = []
+    for kw in keywords:
+        if kw.lower() not in seen_keywords:
+            seen_keywords.add(kw.lower())
+            unique_keywords.append(kw)
+
+    seen_hashtags = set()
+    unique_hashtags = []
+    for ht in hashtags:
+        if ht.lower() not in seen_hashtags:
+            seen_hashtags.add(ht.lower())
+            unique_hashtags.append(ht)
+
+    # Limit to reasonable numbers for SEO
+    keywords = unique_keywords[:20]
+    hashtags = unique_hashtags[:25]
+
+    # Format the SEO section
+    seo_section = "\n\n---\n\n"
+    seo_section += "## 🔍 Keywords & Topics\n\n"
+    seo_section += f"**Trending Topics**: {', '.join(keywords)}\n\n"
+    seo_section += f"**Hashtags**: {' '.join(hashtags)}\n\n"
+    seo_section += "*These keywords and hashtags help you discover related content and connect with the AI community. "
+    seo_section += "Share this post using these tags to maximize visibility!*\n"
+
+    return seo_section
+
+
 def generate_blog_post(aggregated, insights, history):
     """Generate the complete blog post with personality and context"""
     today = get_today_date_str()
@@ -585,6 +826,9 @@ def generate_blog_post(aggregated, insights, history):
     post += generate_patterns_section(patterns, persona, history)
     post += generate_insights_section(inferences, persona)
     post += generate_personal_takeaway(aggregated, insights, persona, history)
+
+    # Add SEO-optimized keywords and hashtags section
+    post += generate_seo_section(aggregated, insights, persona)
 
     post += "\n---\n\n"
     post += f"*Written by **The Pulse** {emoji} — your enthusiastic guide to the Ollama ecosystem. "

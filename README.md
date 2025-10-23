@@ -23,7 +23,7 @@ Seamless AI-assisted coding and dependency updates for a fully automated bloggin
 - **GitHub Actions** - Automated workflows
 - **GitHub Copilot** - AI-assisted development
 - **Dependabot** - Automated dependency updates
-- **Midnight Theme** - Remote Jekyll theme
+- **Custom SCSS Design** - Modern dark theme with glassmorphism and animations
 
 ## 📂 Repository Structure
 
