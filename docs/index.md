@@ -25,9 +25,22 @@ Seamless AI-assisted coding and dependency updates keep this blog running smooth
 
 <div class="posts">
   {% for post in site.posts limit:5 %}
-    <article class="post">
-      <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-      <p class="post-meta">{{ post.date | date: "%B %d, %Y" }}</p>
+    {% assign post_class = "post" %}
+    {% if post.tags contains "ollama-pulse" or post.categories contains "ollama-pulse" %}
+      {% assign post_class = "post post-ollama-pulse" %}
+    {% elsif post.tags contains "ai-research" or post.categories contains "ai-research" %}
+      {% assign post_class = "post post-ai-research" %}
+    {% endif %}
+    <article class="{{ post_class }}">
+      <h3 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+      <p class="post-meta">
+        <span class="post-date">{{ post.date | date: "%B %d, %Y" }}</span>
+        {% if post.tags contains "ollama-pulse" or post.categories contains "ollama-pulse" %}
+          <span class="post-badge">💡 Ollama Pulse</span>
+        {% elsif post.tags contains "ai-research" or post.categories contains "ai-research" %}
+          <span class="post-badge">📚 AI Research Daily</span>
+        {% endif %}
+      </p>
       <p>{{ post.excerpt }}</p>
     </article>
   {% endfor %}

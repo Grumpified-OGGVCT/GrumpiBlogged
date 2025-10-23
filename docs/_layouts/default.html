@@ -12,11 +12,19 @@
     <div id="container">
       <div class="inner">
         <header>
-          <h1><a href="{{ '/' | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
-          <h2>{{ site.description | default: site.github.project_tagline }}</h2>
+          <!-- Animated Logo/Banner -->
+          <div class="site-logo">
+            <h1 class="logo-text">
+              <a href="{{ '/' | relative_url }}">
+                <span class="logo-grumpi">Grumpi</span><span class="logo-blogged">Blogged</span>
+              </a>
+            </h1>
+            <div class="logo-accent-line"></div>
+          </div>
+          <h2 class="site-tagline">{{ site.description | default: site.github.project_tagline }}</h2>
         </header>
 
-        <!-- Dynamic Navigation Menu -->
+        <!-- Enhanced Dynamic Navigation Menu -->
         <nav id="main-nav">
           <ul>
             {% for item in site.navigation %}

@@ -61,7 +61,7 @@ body {
 }
 
 /* ============================================
-   HEADER & BRANDING
+   HEADER & BRANDING - ANIMATED LOGO
    ============================================ */
 
 header {
@@ -71,17 +71,114 @@ header {
   position: relative;
 }
 
-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #63c0f5, transparent);
+/* Animated Logo Container */
+.site-logo {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
 }
 
+.logo-text {
+  font-size: 4.5rem;
+  margin: 0;
+  padding: 0;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  position: relative;
+  display: inline-block;
+}
+
+.logo-text a {
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* "Grumpi" part - Amber gradient with animation */
+.logo-grumpi {
+  background: linear-gradient(135deg, var(--color-amber-light) 0%, var(--color-amber) 50%, var(--color-amber-dark) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease-in-out infinite;
+  display: inline-block;
+  position: relative;
+}
+
+/* "Blogged" part - Crimson gradient with animation */
+.logo-blogged {
+  background: linear-gradient(135deg, var(--color-crimson-light) 0%, var(--color-crimson) 50%, var(--color-crimson-dark) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease-in-out infinite reverse;
+  display: inline-block;
+  position: relative;
+}
+
+/* Gradient animation */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Accent line under logo with dual-color animation */
+.logo-accent-line {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--color-amber) 0%,
+    var(--color-amber-light) 25%,
+    var(--color-crimson-light) 75%,
+    var(--color-crimson) 100%);
+  background-size: 200% 100%;
+  animation: lineShimmer 3s linear infinite;
+  border-radius: 2px;
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.3), 0 0 20px rgba(220, 20, 60, 0.3);
+}
+
+@keyframes lineShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Subtle glow effect on hover */
+.logo-text:hover .logo-grumpi {
+  filter: drop-shadow(0 0 20px rgba(255, 165, 0, 0.6));
+  animation: gradientShift 2s ease-in-out infinite, pulse 2s ease-in-out infinite;
+}
+
+.logo-text:hover .logo-blogged {
+  filter: drop-shadow(0 0 20px rgba(220, 20, 60, 0.6));
+  animation: gradientShift 2s ease-in-out infinite reverse, pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Site tagline */
+.site-tagline {
+  font-size: 1.1rem;
+  color: #999;
+  font-weight: 300;
+  max-width: 700px;
+  margin: 30px auto 0;
+  line-height: 1.6;
+}
+
+/* Legacy header styles for backwards compatibility */
 header h1 {
   font-size: 3.5rem;
   margin-bottom: 15px;
@@ -111,20 +208,23 @@ header h2 {
 }
 
 /* ============================================
-   NAVIGATION - MODERN & RESPONSIVE
+   NAVIGATION - ENHANCED MODERN DESIGN
    ============================================ */
 
 #main-nav {
   margin: 0 0 60px;
   padding: 0;
   border: none;
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, rgba(255, 165, 0, 0.03) 0%, rgba(220, 20, 60, 0.03) 100%);
+  backdrop-filter: blur(15px);
   border-radius: 50px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   position: sticky;
   top: 20px;
   z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 #main-nav ul {
@@ -134,27 +234,32 @@ header h2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
+  gap: 6px;
+  padding: 14px 24px;
 }
 
 #main-nav li {
   display: inline-block;
+  position: relative;
 }
 
 #main-nav a {
   text-decoration: none;
-  color: #aaa;
-  font-weight: 500;
-  padding: 12px 24px;
+  color: #bbb;
+  font-weight: 600;
+  padding: 14px 28px;
   border-radius: 30px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 0.95rem;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   position: relative;
   overflow: hidden;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  display: block;
 }
 
+/* Dual-color shimmer effect on hover */
 #main-nav a::before {
   content: '';
   position: absolute;
@@ -162,22 +267,65 @@ header h2 {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(99, 192, 245, 0.1), transparent);
-  transition: left 0.5s;
-  pointer-events: none; /* Fix: Allow clicks to pass through */
-  z-index: -1; /* Ensure it stays behind the text */
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 165, 0, 0.15),
+    rgba(220, 20, 60, 0.15),
+    transparent);
+  transition: left 0.6s;
+  pointer-events: none;
+  z-index: -1;
 }
 
 #main-nav a:hover::before {
   left: 100%;
 }
 
-#main-nav a:hover,
+/* Subtle bottom border accent */
+#main-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-amber), var(--color-crimson));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
+}
+
+#main-nav a:hover::after {
+  width: 60%;
+}
+
+/* Hover state with dual-color gradient */
+#main-nav a:hover {
+  background: linear-gradient(135deg,
+    rgba(255, 165, 0, 0.15) 0%,
+    rgba(220, 20, 60, 0.15) 100%);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow:
+    0 6px 20px rgba(255, 165, 0, 0.2),
+    0 6px 20px rgba(220, 20, 60, 0.2);
+}
+
+/* Active state with stronger dual-color gradient */
 #main-nav a.active {
-  background: linear-gradient(135deg, #63c0f5 0%, #4fa8d5 100%);
+  background: linear-gradient(135deg,
+    var(--color-amber) 0%,
+    var(--color-crimson) 100%);
   color: #0f0f0f;
+  font-weight: 700;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 192, 245, 0.3);
+  box-shadow:
+    0 4px 16px rgba(255, 165, 0, 0.4),
+    0 4px 16px rgba(220, 20, 60, 0.4);
+}
+
+#main-nav a.active::after {
+  width: 0; /* Hide bottom border on active */
 }
 
 /* ============================================
@@ -654,28 +802,145 @@ a:hover {
 }
 
 /* ============================================
-   HOME PAGE SPECIFIC STYLES
+   HOME PAGE SPECIFIC STYLES - WITH COLOR DIFFERENTIATION
    ============================================ */
 
 .posts article, .experiments article {
   margin: 30px 0;
-  padding: 30px;
+  padding: 35px;
   background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid rgba(99, 192, 245, 0.1);
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
+/* Default top border shimmer */
+.posts article::before,
+.experiments article::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-primary-dark), var(--color-accent-primary));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Ollama Pulse posts on homepage - Amber accents */
+.posts article.post-ollama-pulse::before {
+  background: linear-gradient(90deg, var(--color-amber), var(--color-amber-dark), var(--color-amber));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+.posts article.post-ollama-pulse {
+  border-color: rgba(255, 165, 0, 0.15);
+}
+
+.posts article.post-ollama-pulse:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(255, 165, 0, 0.25);
+  border-color: rgba(255, 165, 0, 0.4);
+}
+
+.posts article.post-ollama-pulse .post-title a {
+  color: var(--color-amber-light);
+}
+
+.posts article.post-ollama-pulse .post-title a:hover {
+  color: var(--color-amber);
+}
+
+.posts article.post-ollama-pulse .post-badge {
+  background: rgba(255, 165, 0, 0.15);
+  color: var(--color-amber-light);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* AI Research Daily posts on homepage - Crimson accents */
+.posts article.post-ai-research::before {
+  background: linear-gradient(90deg, var(--color-crimson), var(--color-crimson-dark), var(--color-crimson));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+.posts article.post-ai-research {
+  border-color: rgba(220, 20, 60, 0.15);
+}
+
+.posts article.post-ai-research:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(220, 20, 60, 0.25);
+  border-color: rgba(220, 20, 60, 0.4);
+}
+
+.posts article.post-ai-research .post-title a {
+  color: var(--color-crimson-light);
+}
+
+.posts article.post-ai-research .post-title a:hover {
+  color: var(--color-crimson);
+}
+
+.posts article.post-ai-research .post-badge {
+  background: rgba(220, 20, 60, 0.15);
+  color: var(--color-crimson-light);
+  border: 1px solid rgba(220, 20, 60, 0.3);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Default hover for posts without specific type */
 .posts article:hover,
 .experiments article:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(99, 192, 245, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(99, 192, 245, 0.2);
   border-color: rgba(99, 192, 245, 0.3);
 }
 
 .posts article:last-child,
 .experiments article:last-child {
   border-bottom: 1px solid rgba(99, 192, 245, 0.1);
+}
+
+/* Post meta styling */
+.posts article .post-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.posts article .post-date {
+  color: #999;
+}
+
+/* Post title styling */
+.posts article .post-title {
+  margin-bottom: 12px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.posts article .post-title a {
+  text-decoration: none;
+  transition: color 0.3s;
 }
 
 /* ============================================
@@ -725,6 +990,15 @@ p {
   .wrapper,
   #container .inner {
     padding: 0 20px;
+  }
+
+  /* Responsive animated logo */
+  .logo-text {
+    font-size: 3rem;
+  }
+
+  .site-tagline {
+    font-size: 1rem;
   }
 
   header h1 {
@@ -777,6 +1051,22 @@ p {
     padding: 40px 0 30px;
   }
 
+  /* Mobile animated logo */
+  .logo-text {
+    font-size: 2.2rem;
+    letter-spacing: -1px;
+  }
+
+  .logo-accent-line {
+    width: 90%;
+    height: 3px;
+  }
+
+  .site-tagline {
+    font-size: 0.9rem;
+    padding: 0 10px;
+  }
+
   header h1 {
     font-size: 2rem;
   }
@@ -817,6 +1107,15 @@ p {
 
   #main-content {
     max-width: 1000px;
+  }
+
+  /* Large screen animated logo */
+  .logo-text {
+    font-size: 5.5rem;
+  }
+
+  .site-tagline {
+    font-size: 1.2rem;
   }
 
   header h1 {
