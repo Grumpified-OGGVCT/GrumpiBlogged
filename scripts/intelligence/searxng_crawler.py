@@ -196,12 +196,24 @@ class SearXNGCrawler:
         query: str,
         categories: List[str],
         time_range: str,
-        engines: List[str] = None
+        engines: List[str] = None,
+        retry_count: int = 0,
+        max_retries: int = 3
     ) -> List[Dict]:
-        """Execute search on a specific instance"""
-        
+        """
+        Execute search on a specific instance with retry logic and delays
+
+        Implements:
+        - Exponential backoff (1s, 2s, 4s delays)
+        - Rate limiting protection (2s delay between requests)
+        - Automatic retry on transient failures
+        """
+
         start_time = datetime.now()
-        
+
+        # Add delay to avoid rate limiting (2 seconds between requests)
+        await asyncio.sleep(2.0)
+
         try:
             # Build search parameters
             params = {
@@ -210,32 +222,50 @@ class SearXNGCrawler:
                 'time_range': time_range,
                 'categories': ','.join(categories)
             }
-            
+
             if engines:
                 params['engines'] = ','.join(engines)
-            
-            # Execute search
+
+            # Execute search with timeout
             async with self.session.get(
                 f"{instance.url}/search",
-                params=params
+                params=params,
+                timeout=aiohttp.ClientTimeout(total=30)
             ) as response:
                 response.raise_for_status()
                 data = await response.json()
-            
+
             # Parse results
             results = self._parse_results(data.get('results', []))
-            
+
             # Update instance health
             response_time = (datetime.now() - start_time).total_seconds()
             instance.update_health(success=True, response_time=response_time)
-            
+
             return results
-        
-        except Exception as e:
+
+        except (aiohttp.ClientError, asyncio.TimeoutError) as e:
             # Update instance health
             response_time = (datetime.now() - start_time).total_seconds()
             instance.update_health(success=False, response_time=response_time)
-            raise
+
+            # Retry with exponential backoff
+            if retry_count < max_retries:
+                backoff_delay = 2 ** retry_count  # 1s, 2s, 4s
+                print(f"   ⏳ Retrying {instance.url} in {backoff_delay}s (attempt {retry_count + 1}/{max_retries})")
+                await asyncio.sleep(backoff_delay)
+
+                return await self._search_instance(
+                    instance=instance,
+                    query=query,
+                    categories=categories,
+                    time_range=time_range,
+                    engines=engines,
+                    retry_count=retry_count + 1,
+                    max_retries=max_retries
+                )
+            else:
+                raise
     
     def _parse_results(self, raw_results: List[Dict]) -> List[Dict]:
         """

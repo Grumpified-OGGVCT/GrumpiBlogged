@@ -104,45 +104,59 @@ class IntelligenceBlogGenerator:
         return report
     
     async def _crawl_all_sources(self) -> dict:
-        """Phase 1: Crawl all intelligence sources in parallel"""
-        
+        """
+        Phase 1: Crawl all intelligence sources in parallel
+
+        Enhanced with Ollama Turbo web search fallback:
+        - If manual crawling fails or returns < 10 signals
+        - Use Ollama web search to gather intelligence
+        - Ensures we always have data to analyze
+        """
+
         # Create crawlers
         searxng = SearXNGCrawler(self.searxng_instances)
         reddit = RedditGraphCrawler(self.ai_subreddits)
         hackernews = HackerNewsGraphCrawler()
-        
+
         # Parallel crawling
         print("🕷️  Launching parallel crawlers...")
-        
+
         results = await asyncio.gather(
             self._crawl_searxng(searxng),
             self._crawl_reddit(reddit),
             self._crawl_hackernews(hackernews),
             return_exceptions=True
         )
-        
+
         # Combine results
         all_signals = []
         graphs = {
             'user_graph': None,
             'topic_graph': None
         }
-        
+
         for result in results:
             if isinstance(result, Exception):
                 print(f"   ⚠️  Crawler failed: {result}")
                 continue
-            
+
             all_signals.extend(result.get('signals', []))
-            
+
             # Merge graphs (simplified - in production, use proper graph merging)
             if result.get('user_graph'):
                 graphs['user_graph'] = result['user_graph']
             if result.get('topic_graph'):
                 graphs['topic_graph'] = result['topic_graph']
-        
+
         print(f"\n✅ Crawling complete: {len(all_signals)} total signals")
-        
+
+        # FALLBACK: Use Ollama web search if we got too few signals
+        if len(all_signals) < 10:
+            print(f"\n⚠️  Only {len(all_signals)} signals - using Ollama web search fallback...")
+            fallback_signals = await self._web_search_fallback()
+            all_signals.extend(fallback_signals)
+            print(f"   ✅ Added {len(fallback_signals)} signals from web search")
+
         return {
             'signals': all_signals,
             'total_signals': len(all_signals),
@@ -251,18 +265,64 @@ class IntelligenceBlogGenerator:
             'topic_graph': crawler.topic_graph
         }
     
+    async def _web_search_fallback(self) -> List[dict]:
+        """
+        Fallback: Use Ollama Turbo web search when manual crawling fails
+
+        Queries:
+        - Latest AI/ML developments
+        - New LLM releases
+        - AI research breakthroughs
+        - Local AI tools and models
+        """
+        from synthesis_engine import OllamaCloudClient
+
+        signals = []
+
+        async with OllamaCloudClient(self.ollama_api_key) as client:
+            queries = [
+                "Latest AI and machine learning developments today",
+                "New LLM releases and local AI models",
+                "AI research breakthroughs and papers",
+                "Open source AI tools and frameworks"
+            ]
+
+            for query in queries:
+                try:
+                    print(f"   🔍 Web search: {query}")
+                    result = await client.web_search(
+                        model='deepseek-v3.1:671b-cloud',
+                        query=query,
+                        max_tokens=1000
+                    )
+
+                    # Parse web search results into signals
+                    signals.append({
+                        'source': 'ollama_web_search',
+                        'title': query,
+                        'content': result,
+                        'url': 'https://ollama.ai',
+                        'engagement': {'score': 1.0},
+                        'timestamp': datetime.now().isoformat()
+                    })
+
+                except Exception as e:
+                    print(f"      ⚠️  Web search failed: {e}")
+
+        return signals
+
     async def _synthesize_intelligence(self, data: dict) -> IntelligenceReport:
         """Phase 2: Synthesize raw intelligence into insights"""
-        
+
         print("🧠 Synthesizing intelligence...")
-        
+
         engine = SynthesisEngine(self.ollama_api_key)
         report = await engine.synthesize(data)
-        
+
         print(f"   ✅ Generated intelligence report")
         print(f"      Headline: {report.headline}")
         print(f"      Confidence: {report.confidence_score:.2%}")
-        
+
         return report
     
     async def _create_visualizations(self, data: dict) -> dict:

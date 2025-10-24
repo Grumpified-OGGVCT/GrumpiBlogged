@@ -48,7 +48,15 @@ class IntelligenceReport:
 
 
 class OllamaCloudClient:
-    """Client for Ollama Cloud API (works in GitHub Actions)"""
+    """
+    Enhanced Ollama Cloud API Client with ALL Turbo capabilities:
+    - Thinking (advanced reasoning)
+    - Vision (image analysis)
+    - Web Search (fallback when scraping fails)
+    - Tool Calling (orchestrate external APIs)
+    - Embeddings (semantic clustering)
+    - Structured Outputs (clean JSON responses)
+    """
 
     def __init__(self, api_key: str, base_url: str = "https://api.ollama.ai"):
         self.api_key = api_key
@@ -73,15 +81,42 @@ class OllamaCloudClient:
         model: str,
         prompt: str,
         max_tokens: int = 1000,
-        temperature: float = 0.7
+        temperature: float = 0.7,
+        thinking: bool = False,
+        web_search: bool = False,
+        structured_output: Optional[Dict] = None,
+        images: Optional[List[str]] = None,
+        tools: Optional[List[Dict]] = None
     ) -> str:
-        """Generate text using Ollama Cloud model"""
+        """
+        Generate text using Ollama Cloud with ALL capabilities
+
+        Args:
+            model: Model name (e.g., 'deepseek-v3.1:671b-cloud')
+            prompt: Text prompt
+            max_tokens: Maximum tokens to generate
+            temperature: Sampling temperature
+            thinking: Enable advanced reasoning mode
+            web_search: Enable web search capability
+            structured_output: JSON schema for structured response
+            images: List of image URLs or base64 data for vision
+            tools: List of tool definitions for tool calling
+        """
 
         url = f"{self.base_url}/api/chat"
 
+        # Build message content
+        message_content = prompt
+        if images:
+            # Vision mode: include images
+            message_content = {
+                'text': prompt,
+                'images': images
+            }
+
         payload = {
             'model': model,
-            'messages': [{'role': 'user', 'content': prompt}],
+            'messages': [{'role': 'user', 'content': message_content}],
             'stream': False,
             'options': {
                 'num_predict': max_tokens,
@@ -89,25 +124,125 @@ class OllamaCloudClient:
             }
         }
 
+        # Enable thinking mode
+        if thinking:
+            payload['options']['thinking'] = True
+
+        # Enable web search
+        if web_search:
+            payload['web_search'] = True
+
+        # Enable structured outputs
+        if structured_output:
+            payload['format'] = structured_output
+
+        # Enable tool calling
+        if tools:
+            payload['tools'] = tools
+
         async with self.session.post(url, json=payload) as response:
             response.raise_for_status()
             data = await response.json()
             return data['message']['content']
 
+    async def web_search(
+        self,
+        model: str,
+        query: str,
+        max_tokens: int = 2000,
+        temperature: float = 0.7
+    ) -> str:
+        """
+        Perform web search using Ollama Turbo (fallback when scraping fails)
+
+        Args:
+            model: Model to use for search synthesis
+            query: Search query
+            max_tokens: Max response length
+            temperature: Sampling temperature
+
+        Returns:
+            Synthesized search results
+        """
+        return await self.generate(
+            model=model,
+            prompt=query,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            web_search=True
+        )
+
+    async def analyze_image(
+        self,
+        model: str,
+        image_url: str,
+        prompt: str,
+        max_tokens: int = 1000
+    ) -> str:
+        """
+        Analyze image using vision capability
+
+        Args:
+            model: Vision-capable model (e.g., 'qwen3-vl:235b-cloud')
+            image_url: URL or base64 data of image
+            prompt: Analysis prompt
+            max_tokens: Max response length
+
+        Returns:
+            Image analysis
+        """
+        return await self.generate(
+            model=model,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            images=[image_url]
+        )
+
+    async def structured_generate(
+        self,
+        model: str,
+        prompt: str,
+        schema: Dict,
+        max_tokens: int = 1000,
+        temperature: float = 0.7
+    ) -> Dict:
+        """
+        Generate structured JSON output matching schema
+
+        Args:
+            model: Model to use
+            prompt: Generation prompt
+            schema: JSON schema for output
+            max_tokens: Max tokens
+            temperature: Sampling temperature
+
+        Returns:
+            Parsed JSON matching schema
+        """
+        import json
+        response = await self.generate(
+            model=model,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            structured_output=schema
+        )
+        return json.loads(response)
+
     async def embed_batch(self, model: str, texts: List[str]) -> List[List[float]]:
         """Generate embeddings for multiple texts"""
 
         embeddings = []
-        
+
         for text in texts:
             url = f"{self.base_url}/api/embeddings"
             payload = {'model': model, 'prompt': text}
-            
+
             async with self.session.post(url, json=payload) as response:
                 response.raise_for_status()
                 data = await response.json()
                 embeddings.append(data['embedding'])
-        
+
         return embeddings
 
 
@@ -115,6 +250,13 @@ class SynthesisEngine:
     """
     Advanced synthesis engine that transforms raw intelligence
     into compelling, actionable narratives.
+
+    Enhanced with ALL Ollama Turbo capabilities:
+    - Thinking mode for deep analysis
+    - Vision for image/chart analysis
+    - Web search as fallback
+    - Structured outputs for clean data
+    - Tool calling for orchestration
     """
 
     def __init__(self, ollama_api_key: str):
@@ -122,8 +264,9 @@ class SynthesisEngine:
 
         # Model selection for different tasks - using Ollama Cloud models
         self.models = {
-            'reasoning': 'deepseek-v3.1:671b-cloud',  # Best for analysis
+            'reasoning': 'deepseek-v3.1:671b-cloud',  # Best for analysis (thinking mode)
             'creative': 'qwen3-coder:30b-cloud',      # Best for writing
+            'vision': 'qwen3-vl:235b-cloud',          # Best for image analysis
             'embedding': 'nomic-embed-text'            # Best for embeddings
         }
     
