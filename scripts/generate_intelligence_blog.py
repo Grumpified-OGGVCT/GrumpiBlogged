@@ -24,6 +24,7 @@ import asyncio
 import os
 import sys
 from datetime import datetime
+import pytz
 from pathlib import Path
 
 # Add intelligence module to path
@@ -310,7 +311,7 @@ class IntelligenceBlogGenerator:
         front_matter = f"""---
 layout: post
 title: "{report.headline}"
-date: {report.generated_at.strftime('%Y-%m-%d %H:%M:%S %z')}
+date: {datetime.now(pytz.timezone('America/Chicago')).strftime('%Y-%m-%d %H:%M:%S %z')}
 author: The Intelligence Network
 tags: [ai, ml, intelligence, trends, analysis]
 description: "{report.summary[:160]}"

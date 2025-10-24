@@ -18,7 +18,7 @@ Daily Personas:
 import json
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta`nimport pytz
 from pathlib import Path
 import random
 from collections import defaultdict
@@ -1378,7 +1378,7 @@ def save_blog_post(post_content, persona, aggregated, insights):
     front_matter = f"""---
 layout: post
 title: "{headline}"
-date: {now.strftime('%Y-%m-%d %H:%M:%S %z')}
+date: {datetime.now(pytz.timezone('America/Chicago')).strftime('%Y-%m-%d %H:%M:%S %z')}
 author: The Pulse {emoji}
 tags: {tags}
 persona: {persona_name}
