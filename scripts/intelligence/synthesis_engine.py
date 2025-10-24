@@ -47,14 +47,14 @@ class IntelligenceReport:
     generated_at: datetime
 
 
-class OllamaProxyClient:
-    """Client for Ollama Proxy API"""
-    
-    def __init__(self, api_key: str, base_url: str = "http://localhost:8081"):
+class OllamaCloudClient:
+    """Client for Ollama Cloud API (works in GitHub Actions)"""
+
+    def __init__(self, api_key: str, base_url: str = "https://api.ollama.ai"):
         self.api_key = api_key
         self.base_url = base_url
         self.session: Optional[aiohttp.ClientSession] = None
-    
+
     async def __aenter__(self):
         self.session = aiohttp.ClientSession(
             headers={
@@ -63,11 +63,11 @@ class OllamaProxyClient:
             }
         )
         return self
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.session:
             await self.session.close()
-    
+
     async def generate(
         self,
         model: str,
@@ -75,10 +75,10 @@ class OllamaProxyClient:
         max_tokens: int = 1000,
         temperature: float = 0.7
     ) -> str:
-        """Generate text using Ollama model"""
-        
+        """Generate text using Ollama Cloud model"""
+
         url = f"{self.base_url}/api/chat"
-        
+
         payload = {
             'model': model,
             'messages': [{'role': 'user', 'content': prompt}],
@@ -88,15 +88,15 @@ class OllamaProxyClient:
                 'temperature': temperature
             }
         }
-        
+
         async with self.session.post(url, json=payload) as response:
             response.raise_for_status()
             data = await response.json()
             return data['message']['content']
-    
+
     async def embed_batch(self, model: str, texts: List[str]) -> List[List[float]]:
         """Generate embeddings for multiple texts"""
-        
+
         embeddings = []
         
         for text in texts:
@@ -116,11 +116,11 @@ class SynthesisEngine:
     Advanced synthesis engine that transforms raw intelligence
     into compelling, actionable narratives.
     """
-    
+
     def __init__(self, ollama_api_key: str):
-        self.ollama = OllamaProxyClient(ollama_api_key)
-        
-        # Model selection for different tasks
+        self.ollama = OllamaCloudClient(ollama_api_key)
+
+        # Model selection for different tasks - using Ollama Cloud models
         self.models = {
             'reasoning': 'deepseek-v3.1:671b-cloud',  # Best for analysis
             'creative': 'qwen3-coder:30b-cloud',      # Best for writing

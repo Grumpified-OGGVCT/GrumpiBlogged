@@ -396,13 +396,13 @@ description: "{report.summary[:160]}"
 
 async def main():
     """Main entry point"""
-    
-    # Get API key from environment
-    api_key = os.getenv('OLLAMA_PROXY_API_KEY')
-    
+
+    # Get API key from environment (Ollama Cloud API for GitHub Actions)
+    api_key = os.getenv('OLLAMA_CLOUD_API_KEY')
+
     if not api_key:
-        print("❌ Error: OLLAMA_PROXY_API_KEY environment variable not set")
-        print("   Set it with: export OLLAMA_PROXY_API_KEY='your-key-here'")
+        print("❌ Error: OLLAMA_CLOUD_API_KEY environment variable not set")
+        print("   Set it with: export OLLAMA_CLOUD_API_KEY='your-key-here'")
         return 1
     
     # Run pipeline

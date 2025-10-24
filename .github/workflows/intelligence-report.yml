@@ -29,7 +29,7 @@ jobs:
       
       - name: Run intelligence pipeline
         env:
-          OLLAMA_PROXY_API_KEY: ${{ secrets.OLLAMA_PROXY_API_KEY }}
+          OLLAMA_CLOUD_API_KEY: ${{ secrets.OLLAMA_CLOUD_API_KEY }}
         run: |
           cd .
           python scripts/generate_intelligence_blog.py
