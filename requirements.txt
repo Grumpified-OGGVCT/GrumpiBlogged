@@ -24,3 +24,7 @@ scikit-learn>=1.3.0  # Machine learning (DBSCAN clustering)
 
 # Timezone support
 pytz>=2024.1
+
+# Nostr publishing (NIP-23)
+nostr-sdk>=0.32.0  # Rust-based Nostr SDK with proper signing
+# Alternative: python-nostr>=0.0.2 (pure Python, lighter weight)
