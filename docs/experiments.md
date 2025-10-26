@@ -12,12 +12,13 @@ permalink: /experiments/
 
 ## 📡 **Three Automated Blog Sources**
 
-### 💡 **Ollama Pulse** (Daily AI Ecosystem Updates)
-- **Schedule**: Every 30 minutes, posts when new data available
+### 💡 **Ollama Pulse** (Comprehensive Ecosystem Intelligence)
+- **Schedule**: Webhook-triggered + scheduled checks every 30 minutes
 - **Source**: [Ollama Pulse Repository](https://github.com/Grumpified-OGGVCT/ollama_pulse)
-- **Content**: Daily updates from the Ollama ecosystem—new models, community projects, trending repositories
-- **Persona System**: 6 rotating personas (Hype Caster, Mechanic, Curious Analyst, Trend Spotter, Informed Enthusiast, Scholar)
-- **Visual Identity**: Amber accent colors (#FFA500)
+- **Content**: Intelligence from 16 data sources—Stack Overflow, Model Registry, GitHub, Reddit, HN, YouTube, Discord, Nostr, Manual Tracking, and more
+- **Persona**: EchoVein with 4 adaptive modes (Vein Rush, Artery Audit, Fork Phantom, Deep Vein Throb)
+- **Turbo-Centric Scoring**: Every item scored 0-1 for Ollama Turbo/Cloud relevance
+- **Visual Identity**: Vein-themed with blood flow metaphors
 - **Latest Post**: Check the [Posts page](/GrumpiBlogged/posts/) for today's Ollama Pulse
 
 ### 📚 **The Lab - AI Research Daily**

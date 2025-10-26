@@ -1,6 +1,8 @@
 name: Daily Learning Blog Post (AI Research Daily)
 
 on:
+  repository_dispatch:
+    types: [ai-research-daily-update]
   schedule:
     # Check every 30 minutes during morning hours (0700-0900 CT)
     - cron: '0,30 12-14 * * *'   # 0700-0900 CDT (UTC-5)

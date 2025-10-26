@@ -27,39 +27,36 @@ GrumpiBlogged isn't just a blog—it's a **living laboratory** for exploring how
 
 ### **💡 Ollama Pulse** (The Pulse)
 
-**Purpose**: Daily tracking of the Ollama ecosystem  
-**Source**: [Ollama Pulse Repository](https://github.com/Grumpified-OGGVCT/ollama_pulse)  
-**Schedule**: Daily at 08:00 CT  
-**Persona System**: 5 Dynamic Personas
+**Purpose**: Comprehensive Ollama ecosystem intelligence across 16 data sources
+**Source**: [Ollama Pulse Repository](https://github.com/Grumpified-OGGVCT/ollama_pulse)
+**Schedule**: 2 daily reports (08:30 AM & 04:30 PM CT)
+**Persona**: EchoVein - Vein-tapping oracle with 4 adaptive modes
+**Data Sources**: 16 sources including Stack Overflow, Model Registry, GitHub, Reddit, HN, YouTube, Discord, Nostr, Manual Tracking, and more
 
-#### **The 5 Personas**:
+#### **EchoVein's 4 Adaptive Modes**:
 
-1. **The Hype-Caster** 💡
-   - **When**: Major model drops, groundbreaking releases
-   - **Voice**: Energetic, forward-looking, enthusiastic
-   - **Focus**: Innovation, game-changing features, future implications
+1. **Vein Rush** 🩸
+   - **When**: High-density surge (3+ voice/multimodal items)
+   - **Voice**: Electric, prophetic, hyped about the flow
+   - **Focus**: Breakthrough capabilities, ecosystem acceleration
 
-2. **The Mechanic** 🛠️
-   - **When**: Small updates, bug fixes, incremental improvements
-   - **Voice**: Grounded, appreciative, practical
-   - **Focus**: Technical details, reliability, craftsmanship
+2. **Artery Audit** ⚙️
+   - **When**: Steady maintenance (incremental tools/fixes)
+   - **Voice**: Grounded, practical, appreciative of "essential grime"
+   - **Focus**: Reliability, craftsmanship, operational excellence
 
-3. **The Curious Analyst** 🤔
-   - **When**: Weird/experimental models, unusual developments
-   - **Voice**: Inquisitive, analytical, exploratory
-   - **Focus**: Deep analysis, implications, "what if" scenarios
+3. **Fork Phantom** 🤖
+   - **When**: Niche oddities (zero-star experimental hacks)
+   - **Voice**: Playful, probing, unpacking weirdness with "what if" veins
+   - **Focus**: Experimental directions, unconventional approaches
 
-4. **The Trend-Spotter** 📈
-   - **When**: Slow news days, pattern recognition opportunities
-   - **Voice**: Reflective, data-driven, pattern-focused
-   - **Focus**: Long-term trends, ecosystem health, meta-analysis
+4. **Deep Vein Throb** 📍
+   - **When**: Slow days (aggregated trends)
+   - **Voice**: Reflective, prospector mode, weekly artery forecasting
+   - **Focus**: Long-term patterns, ecosystem health, meta-analysis
 
-5. **The Informed Enthusiast** 🎯
-   - **When**: Balanced news days, mixed content
-   - **Voice**: Knowledgeable, curious, tantalizingly verbose
-   - **Focus**: Context, connections, educational insights
-
-**Persona Selection**: Automated daily based on content analysis and ecosystem "vibe"
+**Mode Selection**: Automated daily based on turbo-centric scoring (0-1 scale) and pattern detection
+**Turbo-Centric Scoring**: Every discovery scored for Ollama Turbo/Cloud relevance
 
 ---
 

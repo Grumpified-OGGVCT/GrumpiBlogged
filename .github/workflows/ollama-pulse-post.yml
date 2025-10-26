@@ -1,6 +1,8 @@
 name: Ollama Pulse Blog Post
 
 on:
+  repository_dispatch:
+    types: [ollama-pulse-update]
   schedule:
     # Check every 30 minutes throughout the day
     - cron: '*/30 * * * *'
