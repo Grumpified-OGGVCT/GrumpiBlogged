@@ -1,0 +1,112 @@
+{
+  "description": "Nostr relay configuration for GrumpiBlogged NIP-23 publishing",
+  "last_updated": "2025-10-26",
+  "total_relays": 48,
+  
+  "primary_relays": {
+    "description": "High-reliability relays, use these first",
+    "relays": [
+      "wss://relay.damus.io",
+      "wss://nos.lol",
+      "wss://nostr.wine",
+      "wss://relay.snort.social",
+      "wss://relay.primal.net",
+      "wss://nostr.mom",
+      "wss://relay.nostr.band"
+    ]
+  },
+  
+  "geographic_relays": {
+    "description": "Regional relays for geographic distribution",
+    "relays": [
+      "wss://atlas.nostr.land",
+      "wss://eden.nostr.land",
+      "wss://puravida.nostr.land",
+      "wss://relay-nostr-br.com.br:4848"
+    ]
+  },
+  
+  "community_relays": {
+    "description": "Community and specialized topic relays",
+    "relays": [
+      "wss://relay.bitcoinpark.com",
+      "wss://lightningrelay.com",
+      "wss://relay.westernbtc.com",
+      "wss://nostr.lopp.social",
+      "wss://purplepag.es",
+      "wss://yabu.me",
+      "wss://wot.nostr.party",
+      "wss://wot.utxo.one",
+      "wss://seal.cafe"
+    ]
+  },
+  
+  "technical_relays": {
+    "description": "Developer and technical community relays",
+    "relays": [
+      "wss://pyramid.fiatjaf.com",
+      "wss://relay.basspistol.org",
+      "wss://offchain.pub",
+      "wss://nostr-01.yakihonne.com",
+      "wss://nostr.slothy.win",
+      "wss://sendit.nosflare.com",
+      "wss://relay1.gems.xyz",
+      "wss://relays.pro"
+    ]
+  },
+  
+  "storage_relays": {
+    "description": "Archive and storage-focused relays",
+    "relays": [
+      "wss://temp.iris.to",
+      "wss://vault.iris.to",
+      "wss://blossom.nostr.build"
+    ]
+  },
+  
+  "alternative_relays": {
+    "description": "Alternative and niche relays",
+    "relays": [
+      "wss://front-end.social",
+      "wss://nicecrew.digital",
+      "wss://nostr-elites.org",
+      "wss://nostr-relay.wellorder.net",
+      "wss://nostr.0xtr.dev",
+      "wss://nostr.btcmp",
+      "wss://nostr.czas.plus",
+      "wss://nostr.ownscale.org",
+      "wss://nostr.soscary.net",
+      "wss://nostr.ussenterprise.xyz",
+      "wss://nostr.vulpem",
+      "wss://relay.alien.blue",
+      "wss://rsslay.sovbit.host"
+    ]
+  },
+  
+  "publishing_strategy": {
+    "description": "How to use these relays for publishing",
+    "strategy": "parallel_broadcast",
+    "primary_count": 7,
+    "secondary_count": 10,
+    "total_target": 17,
+    "notes": [
+      "Publish to all primary relays first (7 relays)",
+      "Then publish to 10 additional relays from other categories",
+      "Rotate through secondary relays to ensure broad distribution",
+      "Monitor success rate and adjust relay selection accordingly"
+    ]
+  },
+  
+  "excluded_relays": {
+    "description": "Relays not used for publishing (paid or caching only)",
+    "paid_relays": [
+      "wss://premium.primal.net",
+      "wss://nostr-pub.wellorder.net",
+      "wss://paid.no.str.cr"
+    ],
+    "caching_services": [
+      "wss://cache2.primal.net/v1"
+    ]
+  }
+}
+

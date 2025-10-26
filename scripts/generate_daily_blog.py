@@ -1252,6 +1252,55 @@ def generate_practical_implications(aggregated, insights, persona):
     return section
 
 
+def generate_support_section():
+    """Generate support/donation section for GrumpiBlogged posts"""
+    section = """## 💰 Support GrumpiBlogged
+
+If these daily insights help you stay ahead of the AI ecosystem, consider supporting the project:
+
+### ☕ Ko-fi (Fiat/Card)
+
+**[💝 Tip on Ko-fi](https://ko-fi.com/grumpified)** | Scan QR Code Below
+
+<a href="https://ko-fi.com/grumpified"><img src="../assets/KofiTipQR_Code_GrumpiFied.png" alt="Ko-fi QR Code" width="200" height="200" /></a>
+
+*Click the QR code or button above to support via Ko-fi*
+
+### ⚡ Lightning Network (Bitcoin)
+
+**Send Sats via Lightning:**
+
+- [🔗 gossamerfalling850577@getalby.com](lightning:gossamerfalling850577@getalby.com)
+- [🔗 havenhelpful360120@getalby.com](lightning:havenhelpful360120@getalby.com)
+
+**Scan QR Codes:**
+
+<a href="lightning:gossamerfalling850577@getalby.com"><img src="../assets/lightning_wallet_QR_Code.png" alt="Lightning Wallet 1 QR Code" width="200" height="200" /></a> <a href="lightning:havenhelpful360120@getalby.com"><img src="../assets/lightning_wallet_QR_Code_2.png" alt="Lightning Wallet 2 QR Code" width="200" height="200" /></a>
+
+### 🎯 Why Support?
+
+- **Keeps the synthesis engine running** — Daily transformation of technical reports into human-readable insights
+- **Funds multi-source integration** — Aggregating Ollama Pulse + AI Research Daily + future sources
+- **Supports open-source AI ecosystem** — All donations go to ecosystem projects
+- **Enables Nostr decentralization** — Publishing to 48+ relays, NIP-23 long-form content
+
+*All donations support open-source AI research and ecosystem monitoring.*
+
+<!-- Ko-fi Floating Widget -->
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('grumpified', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Tip The Pulse',
+    'floating-chat.donateButton.background-color': '#8B0000',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+"""
+    return section
+
+
 def generate_blog_post(aggregated, insights, history):
     """Generate the complete blog post with personality and context"""
     today = get_today_date_str()
@@ -1285,6 +1334,10 @@ def generate_blog_post(aggregated, insights, history):
     # Add SEO-optimized keywords and hashtags section
     post += "\n---\n\n"
     post += generate_seo_section(aggregated, insights, persona)
+
+    # Add donation/support section
+    post += "\n---\n\n"
+    post += generate_support_section()
 
     post += "\n---\n\n"
     post += f"*Written by **The Pulse** {emoji} — your enthusiastic guide to the Ollama ecosystem. "
