@@ -36,6 +36,16 @@ from memory_manager import BlogMemory
 # Import AI editing system
 from ai_editor import AIEditor
 
+# Import Report Translator
+from report_translator import (
+    generate_intro_hook,
+    generate_metrics_snapshot,
+    generate_findings_section,
+    generate_patterns_analysis,
+    generate_developer_framework,
+    generate_priorities_watchlist
+)
+
 # Paths
 AI_RESEARCH_DAILY_REPO = "https://api.github.com/repos/AccidentalJedi/AI_Research_Daily"
 POSTS_DIR = Path("docs/_posts")
@@ -999,40 +1009,42 @@ If these research insights help you stay current with cutting-edge AI developmen
 
 
 def generate_blog_post(aggregated, themes):
-    """Generate the complete blog post with The Scholar's voice"""
+    """Generate the complete blog post with The Scholar's voice
+
+    Uses Report Translator approach for rich, engaging transformation
+    """
     if not aggregated:
         return None
 
-    # Generate opening
-    opening = generate_scholar_opening(aggregated, themes)
+    # Lab persona (The Scholar)
+    persona = ("The Scholar", "📚", "Methodical Analysis")
 
-    # Build the post
-    post = f"{opening}\n\n"
-    post += f"**Today's Intelligence**: {len(aggregated)} research developments analyzed\n\n"
-    post += "---\n\n"
+    # Build report data structure for Report Translator
+    # Convert themes to insights format
+    insights = {
+        'patterns': themes.get('patterns', {}),
+        'inferences': themes.get('themes', [])
+    }
 
-    # Research section
-    post += generate_research_section(aggregated)
+    report_data = {
+        'findings': aggregated,
+        'insights': insights,
+        'history': {},
+        'persona': persona
+    }
 
-    # Implications section
-    post += generate_implications_section(aggregated, themes)
-
-    # Add new depth sections
-    post += "\n---\n\n"
-    post += generate_deep_dive_section(aggregated, themes)
-    post += "\n---\n\n"
-    post += generate_cross_research_analysis(aggregated, themes)
-    post += "\n---\n\n"
-    post += generate_practical_implications(aggregated, themes)
-
-    # SEO section
-    post += "\n---\n\n"
-    post += generate_lab_seo_section(aggregated, themes)
+    # Use Report Translator approach for rich transformation
+    post = generate_intro_hook(report_data, persona)
+    post += generate_metrics_snapshot(report_data)
+    post += generate_findings_section(report_data)
+    post += generate_patterns_analysis(report_data)
+    post += generate_developer_framework(report_data)
+    post += generate_priorities_watchlist(report_data)
 
     # Support section
-    post += "\n---\n\n"
     post += generate_lab_support_section()
 
+    # Attribution
     post += "\n---\n\n"
     post += f"*Written by **The Scholar** 📚 — your rigorous guide to AI research breakthroughs. "
     post += f"Data sourced from [AI Research Daily](https://accidentaljedi.github.io/AI_Research_Daily/).*\n"

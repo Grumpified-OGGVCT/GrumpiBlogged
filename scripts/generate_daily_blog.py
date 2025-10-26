@@ -30,6 +30,16 @@ from memory_manager import BlogMemory
 # Import AI editing system
 from ai_editor import AIEditor
 
+# Import Report Translator
+from report_translator import (
+    generate_intro_hook,
+    generate_metrics_snapshot,
+    generate_findings_section,
+    generate_patterns_analysis,
+    generate_developer_framework,
+    generate_priorities_watchlist
+)
+
 # Paths
 # Support both local development and GitHub Actions
 OLLAMA_PULSE_DATA = Path(os.getenv("OLLAMA_PULSE_DATA_PATH", "../ollama_pulse_temp/data"))
@@ -1302,43 +1312,36 @@ If these daily insights help you stay ahead of the AI ecosystem, consider suppor
 
 
 def generate_blog_post(aggregated, insights, history):
-    """Generate the complete blog post with personality and context"""
+    """Generate the complete blog post with personality and context
+
+    Uses Report Translator approach for rich, engaging transformation
+    """
     today = get_today_date_str()
 
     # Detect daily vibe and persona
     persona = detect_daily_vibe(aggregated, insights)
     persona_name, emoji, tone = persona
 
-    # Separate data by source
-    official = [e for e in aggregated if e.get('source') in ['blog', 'cloud_page']]
-    tools = [e for e in aggregated if e.get('source') in ['github', 'reddit']]
-    patterns = insights.get('patterns', {})
-    inferences = insights.get('inferences', [])
+    # Build report data structure for Report Translator
+    report_data = {
+        'findings': aggregated,
+        'insights': insights,
+        'history': history,
+        'persona': persona
+    }
 
-    # Build the post with personality
-    post = generate_opening(aggregated, insights, persona, history) + "\n"
-    post += generate_official_section(official, persona)
-    post += generate_community_section(tools, persona)
-    post += generate_patterns_section(patterns, persona, history)
-    post += generate_insights_section(inferences, persona)
-    post += generate_personal_takeaway(aggregated, insights, persona, history)
-
-    # Add new depth sections
-    post += "\n---\n\n"
-    post += generate_deep_dive_section(aggregated, insights, persona)
-    post += "\n---\n\n"
-    post += generate_cross_project_analysis(aggregated, insights, persona)
-    post += "\n---\n\n"
-    post += generate_practical_implications(aggregated, insights, persona)
-
-    # Add SEO-optimized keywords and hashtags section
-    post += "\n---\n\n"
-    post += generate_seo_section(aggregated, insights, persona)
+    # Use Report Translator approach for rich transformation
+    post = generate_intro_hook(report_data, persona)
+    post += generate_metrics_snapshot(report_data)
+    post += generate_findings_section(report_data)
+    post += generate_patterns_analysis(report_data)
+    post += generate_developer_framework(report_data)
+    post += generate_priorities_watchlist(report_data)
 
     # Add donation/support section
-    post += "\n---\n\n"
     post += generate_support_section()
 
+    # Add about/attribution
     post += "\n---\n\n"
     post += f"*Written by **The Pulse** {emoji} — your enthusiastic guide to the Ollama ecosystem. "
     post += f"Today's persona: **{persona_name.replace('_', ' ').title()}** ({tone}). "
