@@ -13,7 +13,7 @@
 **Add ONE secret to the GrumpiBlogged repository**:
 
 **Secret Name**: `OLLAMA_PROXY_API_KEY`  
-**Secret Value**: `op_2e0efc5f37c6c1b4_da2701b13246163ae6c8f4ece6d0e5f9082b9ac1849f7109`  
+**Secret Value**: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`  
 **Where**: https://github.com/Grumpified-OGGVCT/GrumpiBlogged/settings/secrets/actions
 
 ---
@@ -83,7 +83,7 @@ You must add secrets separately to each scope.
 
 3. **Enter**:
    - Name: `OLLAMA_PROXY_API_KEY`
-   - Value: `op_2e0efc5f37c6c1b4_da2701b13246163ae6c8f4ece6d0e5f9082b9ac1849f7109`
+   - Value: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
 
 4. **Click**: "Add secret"
 
@@ -96,7 +96,7 @@ You must add secrets separately to each scope.
 ```bash
 gh secret set OLLAMA_PROXY_API_KEY \
   --repo Grumpified-OGGVCT/GrumpiBlogged \
-  --body "op_2e0efc5f37c6c1b4_da2701b13246163ae6c8f4ece6d0e5f9082b9ac1849f7109"
+  --body "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 ---
@@ -215,7 +215,7 @@ Both are **valid outcomes** - the second is expected given your setup.
 1. Go to: https://github.com/Grumpified-OGGVCT/GrumpiBlogged/settings/secrets/actions
 2. Click "New repository secret"
 3. Name: `OLLAMA_PROXY_API_KEY`
-4. Value: `op_2e0efc5f37c6c1b4_da2701b13246163ae6c8f4ece6d0e5f9082b9ac1849f7109`
+4. Value: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
 5. Click "Add secret"
 
 **Done!** ✅
@@ -229,7 +229,7 @@ If you want to use the same key across **all** Grumpified-OGGVCT repos:
 1. Go to: https://github.com/organizations/Grumpified-OGGVCT/settings/secrets/actions
 2. Click "New organization secret"
 3. Name: `OLLAMA_PROXY_API_KEY`
-4. Value: `op_2e0efc5f37c6c1b4_da2701b13246163ae6c8f4ece6d0e5f9082b9ac1849f7109`
+4. Value: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
 5. Repository access: Select "Selected repositories"
 6. Choose: `GrumpiBlogged` (and any others)
 7. Click "Add secret"
