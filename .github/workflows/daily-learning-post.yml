@@ -18,12 +18,12 @@ jobs:
 
     steps:
       - name: Checkout GrumpiBlogged repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: grumpiblogged
 
       - name: Checkout AI Research Daily repository (for data)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: AccidentalJedi/AI_Research_Daily
           path: ai_research_daily
