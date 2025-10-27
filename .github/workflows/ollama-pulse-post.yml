@@ -17,12 +17,12 @@ jobs:
     
     steps:
       - name: Checkout GrumpiBlogged repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: grumpiblogged
           
       - name: Checkout Ollama Pulse repository (for data)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: Grumpified-OGGVCT/ollama_pulse
           path: ollama_pulse
