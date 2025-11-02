@@ -1,0 +1,129 @@
+name: Idea Vault Blog Post
+
+on:
+  repository_dispatch:
+    types: [idea-vault-update]
+  schedule:
+    # Check every 30 minutes during afternoon hours (1400-1600 CT)
+    - cron: '0,30 19-21 * * *'   # 1400-1600 CDT (UTC-5)
+    - cron: '0,30 20-22 * * *'   # 1400-1600 CST (UTC-6)
+  workflow_dispatch:  # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  generate_post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GrumpiBlogged repository
+        uses: actions/checkout@v5
+        with:
+          path: grumpiblogged
+
+      - name: Checkout Idea Vault repository (for data)
+        uses: actions/checkout@v5
+        with:
+          repository: Grumpified-OGGVCT/idea_vault
+          path: idea_vault
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          cd grumpiblogged
+          pip install -r requirements.txt
+
+      - name: Check for new data and time preference
+        id: check
+        env:
+          TZ: America/Chicago
+        run: |
+          TODAY=$(date -u '+%Y-%m-%d')
+          HOUR=$(date +%H)
+
+          # Check if today's data file exists (try multiple possible paths)
+          DATA_FOUND=false
+          for path in "docs/${TODAY}.json" "data/${TODAY}.json" "data/aggregated/${TODAY}.json" "docs/reports/${TODAY}.json"; do
+            if [ -f "idea_vault/${path}" ]; then
+              echo "Found data at: ${path}"
+              DATA_FOUND=true
+              break
+            fi
+          done
+
+          if [ "$DATA_FOUND" = false ]; then
+            echo "No data file for today (${TODAY}) - skipping"
+            echo "should_post=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Check if we've already posted today
+          if [ -f "grumpiblogged/docs/_posts/${TODAY}-idea-vault.md" ]; then
+            echo "Already posted today (${TODAY}) - skipping"
+            echo "should_post=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # For manual triggers, always post
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "Manual trigger - posting immediately"
+            echo "should_post=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # For scheduled runs, prefer 1400-1500 CT window
+          if [ "$HOUR" -ge "14" ] && [ "$HOUR" -le "15" ]; then
+            echo "In preferred time window (1400-1500 CT) - posting"
+            echo "should_post=true" >> $GITHUB_OUTPUT
+          else
+            echo "Outside preferred time window (current: ${HOUR}:00 CT) - waiting"
+            echo "should_post=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Idea Vault blog post
+        if: steps.check.outputs.should_post == 'true'
+        id: generate
+        run: |
+          cd grumpiblogged
+          python scripts/generate_idea_vault_blog.py > draft.md
+          echo "draft_created=true" >> $GITHUB_OUTPUT
+
+      - name: Validate post with memory system
+        if: steps.check.outputs.should_post == 'true'
+        id: validate
+        run: |
+          cd grumpiblogged
+          if python scripts/should_post.py draft.md idea-vault; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+            echo "⛔ Post blocked by memory system (duplicate or quality issue)"
+          fi
+
+      - name: Publish blog post
+        if: steps.validate.outputs.should_publish == 'true'
+        run: |
+          cd grumpiblogged
+          TODAY=$(date -u '+%Y-%m-%d')
+          cp draft.md docs/_posts/${TODAY}-idea-vault.md
+          git config --local user.email "action@github.com"
+          git config --local user.name "GrumpiBot"
+          git add docs/_posts/${TODAY}-idea-vault.md
+          git commit -m "feat(ideas): Idea Vault - ${TODAY}"
+          git push
+
+      - name: Update memory
+        if: steps.validate.outputs.should_publish == 'true'
+        run: |
+          cd grumpiblogged
+          TODAY=$(date -u '+%Y-%m-%d')
+          SLUG="idea-vault-${TODAY}"
+          python scripts/append_memory.py idea-vault ${TODAY} ${SLUG} docs/_posts/${TODAY}-idea-vault.md
+          git add data/memory/
+          git commit -m "chore(memory): Update Idea Vault memory - ${TODAY}"
+          git push

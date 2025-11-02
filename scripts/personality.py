@@ -125,6 +125,34 @@ SCHOLAR_CULTURAL_REFS = [
 
 
 # ============================================================================
+# IDEA VAULT (THE VISIONARY)
+# ============================================================================
+
+VISIONARY_JOKES = [
+    "imagine-if",  # "Imagine if we could..."
+    "what-if-wednesday",  # "Every day is what-if Wednesday"
+    "future-forward",  # "Future-forward thinking engaged"
+    "possibility-space",  # "Exploring the possibility space"
+    "idea-lab",  # "Welcome to the idea lab"
+    "innovation-engine",  # "Innovation engine running"
+]
+
+VISIONARY_ANECDOTES = [
+    "The best ideas start with 'what if' and end with 'why not?'",
+    "Today's wild idea is tomorrow's standard practice.",
+    "Innovation happens when we connect dots that haven't been connected before.",
+    "The future isn't something we predict—it's something we create.",
+]
+
+VISIONARY_CULTURAL_REFS = [
+    "stand-on-shoulders",  # "Standing on the shoulders of those who dared to dream"
+    "bridge-gap",  # "Bridging the gap between vision and reality"
+    "compound-innovation",  # "The compound interest of innovation"
+    "ideas-have-consequences",  # "Ideas have consequences—let's make them good ones"
+]
+
+
+# ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
 
@@ -137,6 +165,7 @@ def get_persona_jokes(persona: str) -> List[str]:
         'trend_spotter': TREND_SPOTTER_JOKES,
         'informed_enthusiast': INFORMED_ENTHUSIAST_JOKES,
         'scholar': SCHOLAR_JOKES,
+        'visionary': VISIONARY_JOKES,
     }
     return jokes_map.get(persona, [])
 
@@ -150,6 +179,7 @@ def get_persona_anecdotes(persona: str) -> List[str]:
         'trend_spotter': TREND_SPOTTER_ANECDOTES,
         'informed_enthusiast': INFORMED_ENTHUSIAST_ANECDOTES,
         'scholar': SCHOLAR_ANECDOTES,
+        'visionary': VISIONARY_ANECDOTES,
     }
     return anecdotes_map.get(persona, [])
 
@@ -223,7 +253,7 @@ def main():
     """Test personality system"""
     print("🎭 Testing Personality System\n")
     
-    personas = ['hype_caster', 'mechanic', 'curious_analyst', 'trend_spotter', 'informed_enthusiast', 'scholar']
+    personas = ['hype_caster', 'mechanic', 'curious_analyst', 'trend_spotter', 'informed_enthusiast', 'scholar', 'visionary']
     
     for persona in personas:
         print(f"\n{'='*60}")
