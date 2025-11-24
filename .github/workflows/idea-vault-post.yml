@@ -18,12 +18,12 @@ jobs:
 
     steps:
       - name: Checkout GrumpiBlogged repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: grumpiblogged
 
       - name: Checkout Idea Vault repository (for data)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: Grumpified-OGGVCT/idea_vault
           path: idea_vault
